@@ -32,5 +32,68 @@ public class Graf {
         }
     }
 
+    public void addNode(Node node) {
+        return;
+    }
+
+    public void removeNode(Node node) {
+        return;
+    }
+
+    public void addEdge(Node from, Node to) {
+        return;
+    }
+
+    public void removeEdge(Node from, Node to) {
+        return;
+    }
+
+    public List<Node> getSuccessors(Node node) {
+        return null;
+    }
+
+    public List<Edge> getOutEdges(Node node) {
+        return null;
+    }
+
+    public List<Edge> getInEdges(Node node) {
+        return null;
+    }
+
+    public List<Edge> getIncidentEdges(Node node) {
+        return null;
+    }
+
+    public List<Node> getAllNodes() {
+        return null;
+    }
+
+    public List<Edge> getAllEdges() {
+        return null;
+    }
+
+    public int[] getSuccessorArray() {
+        return null;
+    }
+
+    public int[][] getAdjMatrix() {
+        return null;
+    }
+
+    public List<Node> getDFS() {
+        return null;
+    }
+
+    public List<Node> getBFS() {
+        return null;
+    }
+
+    public String toDotString() {
+        return null;
+    }
+
+    public void toDotFile(String path) {
+        return;
+    }
 
 }
