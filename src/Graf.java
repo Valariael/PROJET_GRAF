@@ -33,15 +33,24 @@ public class Graf {
     }
 
     public void addNode(Node node) {
+        adjList.put(node, new ArrayList<>());
         return;
     }
 
     public void removeNode(Node node) {
+        adjList.remove(node);
         return;
     }
 
+    public boolean containsNode(Node node) {
+        return adjList.containsKey(node);
+    }
+
     public void addEdge(Node from, Node to) {
-        return;
+        if (containsNode(from) && containsNode(to)) {
+            List adjNodes = adjList.get(from);
+            adjNodes.add(to);
+        }
     }
 
     public void removeEdge(Node from, Node to) {
