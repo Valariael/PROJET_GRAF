@@ -87,19 +87,32 @@ public class Graf {
     }
 
     public void removeEdge(Node from, Node to) {
-        return;
+        if (containsNode(from) && containsNode(to)) {
+            adjList.get(from).remove(to);
+        }
     }
 
     public List<Node> getSuccessors(Node node) {
-        return null;
+        return adjList.get(node);
     }
 
     public List<Edge> getOutEdges(Node node) {
-        return null;
+        List<Node> outNodes = adjList.get(node);
+        List<Edge> outEdges = new ArrayList<>();
+        for (Node n : outNodes) {
+            outEdges.add(new Edge(node, n));
+        }
+        return outEdges;
     }
 
     public List<Edge> getInEdges(Node node) {
-        return null;
+        List<Edge> inEdges = new ArrayList<>();
+        for (Map.Entry<Node, ArrayList<Node>> nodeEntry : adjList.entrySet()) {
+            if (nodeEntry.getValue().contains(node)) {
+                inEdges.add(new Edge(nodeEntry.getKey(), node));
+            }
+        }
+        return inEdges;
     }
 
     public List<Edge> getIncidentEdges(Node node) {
@@ -111,7 +124,13 @@ public class Graf {
     }
 
     public List<Edge> getAllEdges() {
-        return null;
+        List<Edge> edges = new ArrayList();
+        for (Map.Entry<Node, ArrayList<Node>> nodeEntry : adjList.entrySet()) {
+            for (Node node : nodeEntry.getValue()) {
+                edges.add(new Edge(nodeEntry.getKey(), node));
+            }
+        }
+        return edges;
     }
 
     public int[] getSuccessorArray() {

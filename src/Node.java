@@ -34,4 +34,13 @@ public class Node {
     public String toString() {
         return "node id : " + this.id + ", node name : " + this.name + ";";
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof Node)) {
+            return false;
+        }
+        Node otherNode = (Node) obj;
+        return id == otherNode.getId();
+    }
 }
