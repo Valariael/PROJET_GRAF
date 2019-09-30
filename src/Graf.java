@@ -1,3 +1,4 @@
+import java.io.*;
 import java.util.*;
 
 public class Graf {
@@ -13,10 +14,12 @@ public class Graf {
 
         // looping through succesor array to create the other nodes
         for (int nodeNumber : succesorArray) {
+            //create new node if zero read
             if(nodeNumber == 0) {
                 n++;
                 currentNode = new Node(n);
                 adjList.put(currentNode, new ArrayList<>() {});
+            //add node to adjacency list otherwise
             } else {
                 ArrayList<Node> nodes = adjList.get(currentNode);
                 nodes.add(new Node(nodeNumber));
@@ -25,8 +28,33 @@ public class Graf {
         }
     }
 
-    public Graf(String file) {
+    public Graf(String dotFilePath) throws IOException {
+        File file = new File(dotFilePath);
 
+        BufferedReader br = new BufferedReader(new FileReader(file));
+
+        String s;
+        while ((s = br.readLine()) != null) {
+            System.out.println(s);
+            String[] lineParts = s.split(" ");
+
+            for (String part : lineParts) {
+                switch (part) {
+                    case "#":
+
+                        break;
+                    case "digraph":
+
+                        break;
+                    case "graph":
+
+                        break;
+                    default:
+
+                        break;
+                }
+            }
+        }
     }
 
     public Graf() {
@@ -37,8 +65,14 @@ public class Graf {
         adjList.put(node, new ArrayList<>());
     }
 
+    public void addNode(int n) {
+        Node node = new Node(n);
+        adjList.put(node, new ArrayList<>());
+    }
+
     public void removeNode(Node node) {
         adjList.remove(node);
+        //rm edges
     }
 
     public boolean containsNode(Node node) {
@@ -100,8 +134,7 @@ public class Graf {
         return null;
     }
 
-    public void toDotFile(String path) {
-        return;
-    }
+    /*public static Graf() {
 
+    }*/
 }
