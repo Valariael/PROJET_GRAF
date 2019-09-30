@@ -31,4 +31,7 @@ public class Node {
     public void setName(String name) {
         this.name = name;
     }
+    public String toString() {
+        return "node id : " + this.id + ", node name : " + this.name + ";";
+    }
 }

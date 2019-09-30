@@ -4,44 +4,41 @@ public class Graf {
     HashMap<Node, ArrayList<Node>> adjList;
 
     public Graf(int... succesorArray) {
-        adjList = new HashMap<Node, ArrayList<Node>>() {
-            @Override
-            public boolean equals(Object o) {
-                return false;
-            }
-
-            @Override
-            public int hashCode() {
-                return 0;
-            }
-        };
+        adjList = new HashMap<Node, ArrayList<Node>>();
 
         int n = 1;
+        // creating first node
         Node currentNode = new Node(n);
         adjList.put(currentNode, new ArrayList<>() {});
+
+        // looping through succesor array to create the other nodes
         for (int nodeNumber : succesorArray) {
             if(nodeNumber == 0) {
-                System.out.println("next node");
                 n++;
                 currentNode = new Node(n);
-                System.out.println(currentNode.getId());
                 adjList.put(currentNode, new ArrayList<>() {});
             } else {
                 ArrayList<Node> nodes = adjList.get(currentNode);
-                nodes.add(new Node(n));
+                nodes.add(new Node(nodeNumber));
                 adjList.put(currentNode, nodes);
             }
         }
     }
 
+    public Graf(String file) {
+
+    }
+
+    public Graf() {
+        adjList = new HashMap<Node, ArrayList<Node>>();
+    }
+
     public void addNode(Node node) {
         adjList.put(node, new ArrayList<>());
-        return;
     }
 
     public void removeNode(Node node) {
         adjList.remove(node);
-        return;
     }
 
     public boolean containsNode(Node node) {
