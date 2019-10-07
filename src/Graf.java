@@ -10,7 +10,7 @@ public class Graf {
         int n = 1;
         // creating first node
         Node currentNode = new Node(n);
-        adjList.put(currentNode, new ArrayList<>() {});
+        adjList.put(currentNode, new ArrayList<Node>() {});
 
         // looping through succesor array to create the other nodes
         for (int nodeNumber : succesorArray) {
@@ -18,7 +18,7 @@ public class Graf {
             if(nodeNumber == 0) {
                 n++;
                 currentNode = new Node(n);
-                adjList.put(currentNode, new ArrayList<>() {});
+                adjList.put(currentNode, new ArrayList<Node>() {});
             //add node to adjacency list otherwise
             } else {
                 ArrayList<Node> nodes = adjList.get(currentNode);
@@ -81,7 +81,7 @@ public class Graf {
 
     public void addEdge(Node from, Node to) {
         if (containsNode(from) && containsNode(to)) {
-            List adjNodes = adjList.get(from);
+            ArrayList<Node> adjNodes = adjList.get(from);
             adjNodes.add(to);
         }
     }
@@ -124,7 +124,7 @@ public class Graf {
     }
 
     public List<Edge> getAllEdges() {
-        List<Edge> edges = new ArrayList();
+        List<Edge> edges = new ArrayList<>();
         for (Map.Entry<Node, ArrayList<Node>> nodeEntry : adjList.entrySet()) {
             for (Node node : nodeEntry.getValue()) {
                 edges.add(new Edge(nodeEntry.getKey(), node));
@@ -148,12 +148,4 @@ public class Graf {
     public List<Node> getBFS() {
         return null;
     }
-
-    public String toDotString() {
-        return null;
-    }
-
-    /*public static Graf() {
-
-    }*/
 }
