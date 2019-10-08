@@ -118,4 +118,39 @@ public class Graf {
     public List<Node> getBFS() {
         return null;
     }
+
+    public String toDotString() {
+        StringBuilder sb = new StringBuilder();
+
+        if(this instanceof UndirectedGraf) sb.append("graph g {\n");
+        else sb.append("digraph g {\n");
+
+        this.adjList.forEach((nodeFrom, nodeList) -> nodeList.forEach((nodeTo -> {
+            sb.append(" ");
+
+            sb.append(nodeFrom.getId());
+            if(this instanceof UndirectedGraf) sb.append(" -- ");
+            else sb.append(" -> ");
+            sb.append(nodeTo.getId());
+
+            int n;
+            if((n = nodeTo.getToLabel()) >= 0) {
+                sb.append(" [label=");
+                sb.append(n);
+                sb.append("]");
+            }
+
+            sb.append(";\n");
+        })));
+
+        sb.append("}");
+
+        return sb.toString();
+    }
+
+    public void toDotFile(String path) throws IOException {
+        BufferedWriter writer = new BufferedWriter(new FileWriter(path));
+        writer.write(this.toDotString());
+        writer.close();
+    }
 }

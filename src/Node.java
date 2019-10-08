@@ -1,7 +1,7 @@
 public class Node {
     private int id;
     private String name;
-    private int toWeight;
+    private int toWeight = -1;
 
     public Node(String name) {
         this.name = name;
