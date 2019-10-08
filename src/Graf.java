@@ -23,36 +23,6 @@ public class Graf {
             } else {
                 ArrayList<Node> nodes = adjList.get(currentNode);
                 nodes.add(new Node(nodeNumber));
-                adjList.put(currentNode, nodes);
-            }
-        }
-    }
-
-    public Graf(String dotFilePath) throws IOException {
-        File file = new File(dotFilePath);
-
-        BufferedReader br = new BufferedReader(new FileReader(file));
-
-        String s;
-        while ((s = br.readLine()) != null) {
-            System.out.println(s);
-            String[] lineParts = s.split(" ");
-
-            for (String part : lineParts) {
-                switch (part) {
-                    case "#":
-
-                        break;
-                    case "digraph":
-
-                        break;
-                    case "graph":
-
-                        break;
-                    default:
-
-                        break;
-                }
             }
         }
     }

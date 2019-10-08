@@ -1,6 +1,7 @@
 public class Node {
     private int id;
     private String name;
+    private int toWeight;
 
     public Node(String name) {
         this.name = name;
@@ -13,6 +14,17 @@ public class Node {
     public Node(int id, String name) {
         this.id = id;
         this.name = name;
+    }
+
+    public Node(int id, int toWeight) {
+        this.id = id;
+        this.toWeight = toWeight;
+    }
+
+    public Node(int id, String name, int toWeight) {
+        this.id = id;
+        this.name = name;
+        this.toWeight = toWeight;
     }
 
     public int getId() {
@@ -30,6 +42,15 @@ public class Node {
     public void setName(String name) {
         this.name = name;
     }
+
+    public int getToLabel() {
+        return toWeight;
+    }
+
+    public void setToLabel(int toWeight) {
+        this.toWeight = toWeight;
+    }
+
     public String toString() {
         return "node id : " + this.id + ", node name : " + this.name + ";";
     }
