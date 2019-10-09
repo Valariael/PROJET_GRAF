@@ -42,7 +42,6 @@ public class Graf {
 
     public void removeNode(Node node) {
         adjList.remove(node);
-        //rm edges
     }
 
     public boolean containsNode(Node node) {
@@ -108,7 +107,19 @@ public class Graf {
     }
 
     public int[][] getAdjMatrix() {
-        return null;
+        int nodeCount = this.adjList.keySet().size();
+        int[][] matrix = new int[nodeCount][nodeCount];
+        List<Node> nodes = new ArrayList<>(this.adjList.keySet());
+
+        // sorting nodes in case there is a gap between node numbers
+        nodes.sort(Comparator.comparing(Node::getId));
+
+        this.adjList.forEach((nodeFrom, nodeList) -> nodeList.forEach((nodeTo) -> {
+            if(nodeTo.getToLabel() >= 0) matrix[nodes.indexOf(nodeFrom)-1][nodes.indexOf(nodeTo)-1] = nodeTo.getToLabel();
+            else matrix[nodes.indexOf(nodeFrom)-1][nodes.indexOf(nodeTo)-1] = 1;
+        }));
+
+        return matrix;
     }
 
     public Graf getReverseGraph() {
