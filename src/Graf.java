@@ -111,12 +111,62 @@ public class Graf {
         return null;
     }
 
-    public List<Node> getDFS() {
+    public Graf getReverseGraph() {
         return null;
     }
 
-    public List<Node> getBFS() {
+    public Graf getTransitiveClosure() {
         return null;
+    }
+
+    public List<Node> getDFS(Node startingNode) {
+        if(startingNode == null) {
+            startingNode = Collections.min(this.adjList.keySet(), Comparator.comparing(Node::getId));
+        }
+
+        List<Node> visited = new ArrayList<>();
+        Stack<Node> stack = new Stack<>();
+
+        stack.push(startingNode);
+
+        while(!stack.isEmpty()) {
+            Node currentNode = stack.pop();
+
+            if(!visited.contains(currentNode)) {
+                visited.add(currentNode);
+
+                for(Node n : this.adjList.get(currentNode)) {
+                    stack.push(n);
+                }
+            }
+        }
+
+        return visited;
+    }
+
+    public List<Node> getBFS(Node startingNode) {
+        if(startingNode == null) {
+            startingNode = Collections.min(this.adjList.keySet(), Comparator.comparing(Node::getId));
+        }
+
+        List<Node> visited = new ArrayList<>();
+        Queue<Node> queue = new LinkedList<>();
+
+        queue.add(startingNode);
+        visited.add(startingNode);
+
+        while(!queue.isEmpty()) {
+            Node currentNode = queue.poll();
+
+            for(Node n : this.adjList.get(currentNode)) {
+                if(!visited.contains(n)) {
+                    visited.add(n);
+                    queue.add(n);
+                }
+            }
+        }
+
+        return visited;
     }
 
     public String toDotString() {
