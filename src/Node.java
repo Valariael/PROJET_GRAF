@@ -52,7 +52,8 @@ public class Node {
     }
 
     public String toString() {
-        return "node id : " + this.id + ", node name : " + this.name + ";";
+        if(this.name == null) return "node id : " + this.id;
+        return "node id : " + this.id + ", node name : " + this.name;
     }
 
     @Override

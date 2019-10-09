@@ -48,6 +48,15 @@ public class Graf {
         return adjList.containsKey(node);
     }
 
+    public Node getKeyFromGraf(Node node) {
+        Node n = null;
+
+        for(Node key : this.adjList.keySet()) {
+            if(key.getId() == node.getId()) return key;
+        }
+        return null;
+    }
+
     public void addEdge(Node from, Node to) {
         if (containsNode(from) && containsNode(to)) {
             ArrayList<Node> adjNodes = adjList.get(from);
@@ -89,7 +98,7 @@ public class Graf {
     }
 
     public List<Node> getAllNodes() {
-        return null;
+        return new ArrayList<>(this.adjList.keySet());
     }
 
     public List<Edge> getAllEdges() {
@@ -115,8 +124,8 @@ public class Graf {
         nodes.sort(Comparator.comparing(Node::getId));
 
         this.adjList.forEach((nodeFrom, nodeList) -> nodeList.forEach((nodeTo) -> {
-            if(nodeTo.getToLabel() >= 0) matrix[nodes.indexOf(nodeFrom)-1][nodes.indexOf(nodeTo)-1] = nodeTo.getToLabel();
-            else matrix[nodes.indexOf(nodeFrom)-1][nodes.indexOf(nodeTo)-1] = 1;
+            if(nodeTo.getToLabel() >= 0) matrix[nodes.indexOf(nodeFrom)][nodes.indexOf(nodeTo)] = nodeTo.getToLabel();
+            else matrix[nodes.indexOf(nodeFrom)][nodes.indexOf(nodeTo)] = 1;
         }));
 
         return matrix;
