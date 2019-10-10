@@ -34,6 +34,12 @@ public class Main {
             e.printStackTrace();
         }
 
+        UndirectedGraf g3 = UndirectedGraf.randomConnectedGrafBuilder(5);
+        try {
+            g3.toDotFile("random_connected_graf_5.dot");
+        }catch (IOException e) {
+            e.printStackTrace();
+        }
 
     }
 
