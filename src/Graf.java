@@ -100,7 +100,7 @@ public class Graf {
     }
 
     public List<Edge> getIncidentEdges(Node node) {
-        return null;
+        return null; //TODO
     }
 
     public List<Node> getAllNodes() {
@@ -128,7 +128,22 @@ public class Graf {
     }
 
     public int[] getSuccessorArray() {
-        return null;
+        List<Node> nodes = new ArrayList<>(this.getAllNodes());
+        List<Integer> list = new ArrayList<>();
+
+        nodes.sort(Comparator.comparing(Node::getId));
+
+        nodes.forEach(node -> {
+            final List<Node> successors = this.adjList.get(node);
+            successors.forEach(nodeTo -> list.add(nodeTo.getId()));
+            list.add(0);
+        });
+        list.remove(list.size()-1);
+
+        int[] array = new int[list.size()];
+        for(int i = 0; i<list.size(); i++) array[i] = list.get(i);
+
+        return array;
     }
 
     public int[][] getAdjMatrix() {

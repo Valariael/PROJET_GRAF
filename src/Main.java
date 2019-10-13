@@ -34,7 +34,11 @@ public class Main {
             e.printStackTrace();
         }
 
-        UndirectedGraf g3 = UndirectedGraf.randomConnectedGrafBuilder(5);
+        UndirectedGraf g3 = UndirectedGraf.randomGrafBuilder(5, 0.5, true);
+        System.out.println();
+        printGraf(g3);
+        System.out.println();
+        System.out.println(Arrays.toString(g3.getSuccessorArray()));
         try {
             g3.toDotFile("random_connected_graf_5.dot");
         }catch (IOException e) {

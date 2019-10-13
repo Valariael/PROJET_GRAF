@@ -13,7 +13,7 @@ public class UndirectedGraf extends Graf {
         if (connected) { // create a path containing all vertices
             List<Node> unvisited = new ArrayList<>();
             for (int i = 0; i < size; i++) { // Adding vertices to the graf and to the unvisited list, used to trace the path
-                Node newNode = new Node(i);
+                Node newNode = new Node(i+1);
                 randomGraf.addNode(newNode);
                 unvisited.add(newNode);
             }
@@ -35,7 +35,7 @@ public class UndirectedGraf extends Graf {
         }
         else {
             for (int i = 0; i < size; i++) { // Just adding vertices to the graf
-                Node newNode = new Node(i);
+                Node newNode = new Node(i+1);
                 randomGraf.addNode(newNode);
             }
             possible_edges = randomGraf.getAllPossibleEdges();
