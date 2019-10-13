@@ -64,6 +64,12 @@ public class Graf {
         }
     }
 
+    public void addEdge(Edge edge) {
+        if (containsNode(edge.getHead()) && containsNode(edge.getTail())) {
+            adjList.get(edge.getTail()).add(edge.getHead());
+        }
+    }
+
     public void removeEdge(Node from, Node to) {
         if (containsNode(from) && containsNode(to)) {
             adjList.get(from).remove(to);
@@ -109,6 +115,16 @@ public class Graf {
             }
         }
         return edges;
+    }
+
+    public List<Edge> getAllPossibleEdges() {
+        List<Edge> possible_edges = new ArrayList<>();
+        for (Node node_from : adjList.keySet()) {
+            for (Node node_to : adjList.keySet()) {
+                possible_edges.add(new Edge(node_from, node_to));
+            }
+        }
+        return possible_edges;
     }
 
     public int[] getSuccessorArray() {
@@ -223,4 +239,5 @@ public class Graf {
         writer.write(this.toDotString());
         writer.close();
     }
+
 }
