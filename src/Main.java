@@ -1,5 +1,7 @@
 import java.io.*;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
 public class Main {
@@ -46,6 +48,9 @@ public class Main {
         }
         System.out.println();
         printGraf(g3.getReverseGraph());
+        System.out.println();
+        List<Node> nodes = g3.getAllNodes();
+        System.out.println("incident edges to " + nodes.get(0).toString() + " : " + g3.getIncidentEdges(nodes.get(0)));
     }
 
     public static void printGraf(Graf g) {

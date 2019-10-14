@@ -100,7 +100,10 @@ public class Graf {
     }
 
     public List<Edge> getIncidentEdges(Node node) {
-        return null; //TODO
+        List<Edge> edges = getInEdges(node);
+        edges.addAll(getOutEdges(node));
+
+        return edges;
     }
 
     public List<Node> getAllNodes() {
@@ -181,7 +184,7 @@ public class Graf {
     }
 
     public Graf getTransitiveClosure() {
-        return null;
+        return null;//TODO
     }
 
     public List<Node> getDFS(Node startingNode) {
