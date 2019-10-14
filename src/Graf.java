@@ -117,6 +117,7 @@ public class Graf {
                 edges.add(new Edge(nodeEntry.getKey(), node));
             }
         }
+
         return edges;
     }
 
