@@ -163,7 +163,21 @@ public class Graf {
     }
 
     public Graf getReverseGraph() {
-        return null;
+        Graf reverse = new Graf();
+
+        for(Node n : this.getAllNodes()) reverse.addNode(new Node(n.getId()));
+
+        this.adjList.forEach((nodeFrom, nodeList) -> nodeList.forEach((nodeTo) -> {
+            final Node n = reverse.getKeyFromGraf(nodeTo);
+
+            Node to = reverse.getKeyFromGraf(nodeFrom);
+            to.setToLabel(nodeFrom.getToLabel());
+            to.setName(nodeFrom.getName());
+
+            reverse.addEdge(n, to);
+        }));
+
+        return reverse;
     }
 
     public Graf getTransitiveClosure() {

@@ -38,13 +38,14 @@ public class Main {
         System.out.println();
         printGraf(g3);
         System.out.println();
-        System.out.println(Arrays.toString(g3.getSuccessorArray()));
+        System.out.println("successor array : " + Arrays.toString(g3.getSuccessorArray()));
         try {
             g3.toDotFile("random_connected_graf_5.dot");
         }catch (IOException e) {
             e.printStackTrace();
         }
-
+        System.out.println();
+        printGraf(g3.getReverseGraph());
     }
 
     public static void printGraf(Graf g) {
