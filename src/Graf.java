@@ -100,7 +100,10 @@ public class Graf {
     }
 
     public List<Edge> getIncidentEdges(Node node) {
-        return null;
+        List<Edge> edges = getInEdges(node);
+        edges.addAll(getOutEdges(node));
+
+        return edges;
     }
 
     public List<Node> getAllNodes() {
@@ -114,6 +117,7 @@ public class Graf {
                 edges.add(new Edge(nodeEntry.getKey(), node));
             }
         }
+
         return edges;
     }
 
@@ -128,7 +132,22 @@ public class Graf {
     }
 
     public int[] getSuccessorArray() {
-        return null;
+        List<Node> nodes = new ArrayList<>(this.getAllNodes());
+        List<Integer> list = new ArrayList<>();
+
+        nodes.sort(Comparator.comparing(Node::getId));
+
+        nodes.forEach(node -> {
+            final List<Node> successors = this.adjList.get(node);
+            successors.forEach(nodeTo -> list.add(nodeTo.getId()));
+            list.add(0);
+        });
+        list.remove(list.size()-1);
+
+        int[] array = new int[list.size()];
+        for(int i = 0; i<list.size(); i++) array[i] = list.get(i);
+
+        return array;
     }
 
     public int[][] getAdjMatrix() {
@@ -148,11 +167,25 @@ public class Graf {
     }
 
     public Graf getReverseGraph() {
-        return null;
+        Graf reverse = new Graf();
+
+        for(Node n : this.getAllNodes()) reverse.addNode(new Node(n.getId()));
+
+        this.adjList.forEach((nodeFrom, nodeList) -> nodeList.forEach((nodeTo) -> {
+            final Node n = reverse.getKeyFromGraf(nodeTo);
+
+            Node to = reverse.getKeyFromGraf(nodeFrom);
+            to.setToLabel(nodeFrom.getToLabel());
+            to.setName(nodeFrom.getName());
+
+            reverse.addEdge(n, to);
+        }));
+
+        return reverse;
     }
 
     public Graf getTransitiveClosure() {
-        return null;
+        return null;//TODO
     }
 
     public List<Node> getDFS(Node startingNode) {
