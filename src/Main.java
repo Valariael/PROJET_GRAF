@@ -34,9 +34,18 @@ public class Main {
             e.printStackTrace();
         }
 
-        UndirectedGraf g3 = UndirectedGraf.randomConnectedGrafBuilder(5);
+        UndirectedGraf g3 = UndirectedGraf.randomGrafBuilder(5, 0, true);
+        UndirectedGraf g4 = UndirectedGraf.randomGrafBuilder(5, 1, true);
+        UndirectedGraf g5 = UndirectedGraf.randomGrafBuilder(5, 0.5, false);
+        UndirectedGraf g6 = UndirectedGraf.randomGrafBuilder(10, 0.15, false);
+        UndirectedGraf g7 = UndirectedGraf.randomGrafBuilder(2, 1, true);
+
         try {
-            g3.toDotFile("random_connected_graf_5.dot");
+            g3.toDotFile("random_connected_graf_non_dense.dot");
+            g4.toDotFile("random_connected_graf_dense.dot");
+            g5.toDotFile("random_graf.dot");
+            g6.toDotFile("random_graf2.dot");
+            g7.toDotFile("2_nodes.dot");
         }catch (IOException e) {
             e.printStackTrace();
         }
