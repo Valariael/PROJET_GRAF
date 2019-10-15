@@ -29,6 +29,7 @@ public class UndirectedGraf extends Graf {
                 randomGraf.addEdge(currentNode, randomNextNode);
                 unvisited.remove(randomNextNode);
                 possible_edges.remove(new Edge(currentNode, randomNextNode));
+                possible_edges.remove(new Edge(randomNextNode, currentNode));
                 currentNode = randomNextNode;
                 unvisitedSize--;
             }
@@ -73,11 +74,9 @@ public class UndirectedGraf extends Graf {
         List<Edge> possible_edges = new ArrayList<>();
         for (Node node_from : adjList.keySet()) {
             for (Node node_to : adjList.keySet()) {
-                if (possible_edges.contains(new Edge(node_to, node_from)) || node_from.equals(node_to)) {
-                    System.out.println("does it?");
-                    continue;
+                if (!(possible_edges.contains(new Edge(node_to, node_from)) || node_from.equals(node_to))) {
+                    possible_edges.add(new Edge(node_from, node_to));
                 }
-                possible_edges.add(new Edge(node_from, node_to));
             }
         }
         System.out.println("size:" + possible_edges.size());
