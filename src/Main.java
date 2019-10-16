@@ -36,8 +36,8 @@ public class Main {
             e.printStackTrace();
         }
 
-        UndirectedGraf g3 = UndirectedGraf.randomGrafBuilder(5, 0.5, true);
-        Graf g4 = Graf.randomGrafBuilder(5, 0, true);
+        UndirectedGraf g3 = UndirectedGraf.randomGrafBuilder(5, 1, true);
+        Graf g4 = Graf.randomGrafBuilder(6, 0.08, false);
         System.out.println();
         printGraf(g3);
         System.out.println();

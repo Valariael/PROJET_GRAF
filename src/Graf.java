@@ -127,7 +127,7 @@ public class Graf {
         for (Node node_from : adjList.keySet()) {
             for (Node node_to : adjList.keySet()) {
                 if (!node_from.equals(node_to)) {
-                    possible_edges.add(new Edge(node_from, node_to));
+                    possible_edges.add(new Edge(node_to, node_from));
                 }
             }
         }
@@ -301,12 +301,12 @@ public class Graf {
                 Node randomNextNode = unvisited.get(randomNextIndex);
                 randomGraf.addEdge(currentNode, randomNextNode);
                 unvisited.remove(randomNextNode);
-                possible_edges.remove(new Edge(currentNode, randomNextNode));
+                possible_edges.remove(new Edge(randomNextNode, currentNode));
                 currentNode = randomNextNode;
                 unvisitedSize--;
             }
             randomGraf.addEdge(currentNode, firstNode);  // Loop to the first node
-            possible_edges.remove(new Edge(currentNode, firstNode));
+            possible_edges.remove(new Edge(firstNode, currentNode));
         }
         else {
             for (int i = 0; i < size; i++) { // Just adding vertices to the graf
@@ -334,6 +334,7 @@ public class Graf {
         while (needed_edges > 0) {
             Edge randomEdge = possible_edges.get((int)(Math.random() * possible_edges_nb));
             randomGraf.addEdge(randomEdge);
+            System.out.println("Add: " + randomEdge.getTail().getId() + " -> " + randomEdge.getHead().getId());
             possible_edges.remove(randomEdge);
             possible_edges_nb--;
             needed_edges--;
