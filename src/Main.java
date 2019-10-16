@@ -37,16 +37,14 @@ public class Main {
         }
 
         UndirectedGraf g3 = UndirectedGraf.randomGrafBuilder(5, 0.5, true);
+        Graf g4 = Graf.randomGrafBuilder(5, 0, true);
         System.out.println();
         printGraf(g3);
         System.out.println();
         System.out.println("successor array : " + Arrays.toString(g3.getSuccessorArray()));
         try {
             g3.toDotFile("random_connected_graf_non_dense.dot");
-            g4.toDotFile("random_connected_graf_dense.dot");
-            g5.toDotFile("random_graf.dot");
-            g6.toDotFile("random_graf2.dot");
-            g7.toDotFile("2_nodes.dot");
+            g4.toDotFile("random_connected_graf_directed_non_dense.dot");
         }catch (IOException e) {
             e.printStackTrace();
         }

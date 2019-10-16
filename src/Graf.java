@@ -125,7 +125,9 @@ public class Graf {
         List<Edge> possible_edges = new ArrayList<>();
         for (Node node_from : adjList.keySet()) {
             for (Node node_to : adjList.keySet()) {
-                possible_edges.add(new Edge(node_from, node_to));
+                if (!node_from.equals(node_to)) {
+                    possible_edges.add(new Edge(node_from, node_to));
+                }
             }
         }
         return possible_edges;
@@ -271,6 +273,73 @@ public class Graf {
         BufferedWriter writer = new BufferedWriter(new FileWriter(path));
         writer.write(this.toDotString());
         writer.close();
+    }
+
+    public static Graf randomGrafBuilder(int size, double density, boolean connected) {
+
+        Graf randomGraf = new Graf();
+
+        List<Edge> possible_edges;
+
+        if (connected) { // create a path containing all vertices
+            List<Node> unvisited = new ArrayList<>();
+            for (int i = 0; i < size; i++) { // Adding vertices to the graf and to the unvisited list, used to trace the path
+                Node newNode = new Node(i+1);
+                randomGraf.addNode(newNode);
+                unvisited.add(newNode);
+            }
+            possible_edges = randomGraf.getAllPossibleEdges();
+            int unvisitedSize = unvisited.size();
+            int firstIndex = (int) (Math.random() * unvisitedSize);
+            Node currentNode = unvisited.get(firstIndex);
+            Node firstNode = currentNode;  // Keep the first in memory to loop at the end
+            unvisited.remove(currentNode);
+            unvisitedSize--;
+            while (unvisitedSize > 0) {
+                int randomNextIndex = (int) (Math.random() * unvisitedSize);
+                Node randomNextNode = unvisited.get(randomNextIndex);
+                randomGraf.addEdge(currentNode, randomNextNode);
+                unvisited.remove(randomNextNode);
+                possible_edges.remove(new Edge(currentNode, randomNextNode));
+                currentNode = randomNextNode;
+                unvisitedSize--;
+            }
+            randomGraf.addEdge(currentNode, firstNode);  // Loop to the first node
+            possible_edges.remove(new Edge(currentNode, firstNode));
+        }
+        else {
+            for (int i = 0; i < size; i++) { // Just adding vertices to the graf
+                Node newNode = new Node(i+1);
+                randomGraf.addNode(newNode);
+            }
+            possible_edges = randomGraf.getAllPossibleEdges();
+        }
+
+        if (density < 0) {
+            density = 0;
+        }
+        if (density > 1) {
+            density = 1;
+        }
+        int needed_edges = (int) (size * (size - 1) * density);
+        if (connected) {
+            needed_edges = needed_edges - size;
+        }
+        if (needed_edges < 1) {
+            return randomGraf;
+        }
+
+        int possible_edges_nb = possible_edges.size();
+        while (needed_edges > 0) {
+            Edge randomEdge = possible_edges.get((int)(Math.random() * possible_edges_nb));
+            randomGraf.addEdge(randomEdge);
+            possible_edges.remove(randomEdge);
+            possible_edges_nb--;
+            needed_edges--;
+        }
+
+        return randomGraf;
+
     }
 
 }
