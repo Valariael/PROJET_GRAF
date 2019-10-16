@@ -5,7 +5,7 @@ public class Graf {
     HashMap<Node, ArrayList<Node>> adjList;
 
     public Graf(int... succesorArray) {
-        adjList = new HashMap<Node, ArrayList<Node>>();
+        adjList = new HashMap<>();
 
         int n = 1;
         // creating first node
@@ -28,7 +28,7 @@ public class Graf {
     }
 
     public Graf() {
-        adjList = new HashMap<Node, ArrayList<Node>>();
+        adjList = new HashMap<>();
     }
 
     public void addNode(Node node) {
@@ -42,6 +42,7 @@ public class Graf {
 
     public void removeNode(Node node) {
         adjList.remove(node);
+        //TODO remove all edges
     }
 
     public boolean containsNode(Node node) {

@@ -51,16 +51,16 @@ public class Main {
         System.out.println();
         printGraf(g3.getReverseGraph());
         System.out.println();
-        List<Node> nodes = g3.getAllNodes();
-        System.out.println("incident edges to " + nodes.get(0).toString() + " : " + g3.getIncidentEdges(nodes.get(0)));
+        List<Node> nodes2 = g3.getAllNodes();
+        System.out.println("incident edges to " + nodes2.get(0).toString() + " : " + g3.getIncidentEdges(nodes2.get(0)));
 
-        Graf currentGraf;
+        Graf currentGraf = null;
+        List<Node> nodes;
 
         String choiceMenu;
-        boolean stop = false, weightActivated = false;
+        boolean stop = false, weightActivated = false, current;
         System.out.println("--GRAF PROJECT--\n");
-        while (!stop)
-        {
+        while (!stop) {
             System.out.println("------MENU------");
             System.out.println("1 : Create an empty graph");
             System.out.println("2 : Add a node");
@@ -72,58 +72,403 @@ public class Main {
             System.out.println("8 : Export a graph to a DOT file");
             System.out.println("9 : Reverse the graph");
             System.out.println("10 : Compute the transitive closure of the graph");
-            System.out.println("12 : Traverse the graph in DFS");
-            System.out.println("11 : Traverse the graph in BFS");
+            System.out.println("11 : Traverse the graph in DFS");
+            System.out.println("12 : Traverse the graph in BFS");
             System.out.println("'enter' to exit");
             System.out.println("----------------");
+            if(currentGraf != null) {
+                printGraf(currentGraf); // TODO indicate type of graph
+                System.out.println("----------------");
+            }
 
-            choiceMenu = instructionAndChoice();
+            choiceMenu = instructionAndChoice(null);
             switch (choiceMenu)
             {
                 case "1":
+                    instruction = "";
                     String graphTypeChoice;
-                    System.out.println("---GRAPH TYPE---");
-                    System.out.println("1 : Undirected");
-                    System.out.println("2 : Directed");
-                    System.out.println("3 : Undirected and weighted");
-                    System.out.println("4 : Directed and weighted");
-                    System.out.println("'enter' to return");
-                    System.out.println("----------------");
-
-                    graphTypeChoice =  instructionAndChoice();
-                    switch (graphTypeChoice)
+                    current = false;
+                    while (!current)
                     {
-                        case "1":
-                            currentGraf = new UndirectedGraf();
-                            instruction = "empty undirected graph created";
-                            break;
-                        case "2":
-                            currentGraf = new Graf();
-                            instruction = "empty directed graph created";
-                            break;
-                        case "3":
-                            currentGraf = new UndirectedGraf();
-                            instruction = "empty undirected and weighted graph created";
-                            break;
-                        case "4":
-                            currentGraf = new Graf();
-                            instruction = "empty directed and weighted graph created";
-                            break;
-                        case "":
-                            instruction = "returned";
-                            break;
-                        default:
-                            instruction = "'" + graphTypeChoice + "' is not a choice";
-                            break;
+                        System.out.println();
+                        System.out.println("---GRAPH TYPE---");
+                        System.out.println("1 : Undirected");
+                        System.out.println("2 : Directed");
+                        System.out.println("3 : Undirected and weighted");
+                        System.out.println("4 : Directed and weighted");
+                        System.out.println("'enter' to go back");
+                        System.out.println("----------------");
+
+                        graphTypeChoice = instructionAndChoice(null);
+                        switch (graphTypeChoice)
+                        {
+                            //TODO: ask for override current
+                            case "1":
+                                currentGraf = new UndirectedGraf();
+                                weightActivated = false;
+                                current = true;
+                                instruction = "empty undirected graph created";
+                                break;
+                            case "2":
+                                currentGraf = new Graf();
+                                weightActivated = false;
+                                current = true;
+                                instruction = "empty directed graph created";
+                                break;
+                            case "3":
+                                currentGraf = new UndirectedGraf();
+                                weightActivated = true;
+                                current = true;
+                                instruction = "empty undirected and weighted graph created";
+                                break;
+                            case "4":
+                                currentGraf = new Graf();
+                                weightActivated = true;
+                                current = true;
+                                instruction = "empty directed and weighted graph created";
+                                break;
+                            case "5":
+                                instruction = "";
+                                String randomGraphChoice;
+                                //TODO while
+                                System.out.println();
+                                System.out.println("--RANDOM GRAPH--");
+                                //TODO: weight ?
+                                System.out.println("1 : Create an empty graph");
+                                System.out.println("2 : Add a node");
+                                System.out.println("3 : Remove a node");
+                                System.out.println("4 : Add an edge");
+                                System.out.println("'enter' to go back");
+                                System.out.println("----------------");
+
+                                randomGraphChoice = instructionAndChoice(null);
+                                switch (randomGraphChoice)
+                                {
+                                    //TODO
+                                }
+                                current = true;
+                                break;
+                            case "":
+                                instruction = "returned";
+                                current = true;
+                                break;
+                            default:
+                                instruction = "'" + graphTypeChoice + "' is not a choice";
+                                current = false;
+                                break;
+                        }
                     }
                 break;
                 case "2":
-                    System.out.println("Sous menu 2");
+                    //TODO: return if no graph
+                    instruction = "";
+                    System.out.println();
+                    System.out.println("--Creating node--");
+
+                    current = false;
+                    int id = -1;
+                    while (!current) {
+                        System.out.print("Enter node id (int) : ");
+                        String choice = in.nextLine();
+                        try {
+                            id = Integer.parseInt(choice);
+                            current = true;
+                        } catch(NumberFormatException e) {
+                            System.out.println("!- '" + choice + "' is not an integer");
+                        }
+                    }
+
+                    System.out.print("Enter node name ('enter' for empty) : ");
+                    String name = in.nextLine();
+
+                    instruction = "added node(id: " + id;
+                    if(!name.isEmpty()) {
+                        instruction += ", name: " + name;
+                        currentGraf.addNode(new Node(id, name));
+                    } else
+                        currentGraf.addNode(new Node(id));
+                    instruction += ")";
                     break;
                 case "3":
-                    System.out.println("Sous menu 2");
+                    //TODO: return if no graph
+                    nodes = currentGraf.getAllNodes();
+                    nodes.sort(Comparator.comparing(Node::getId));
+
+                    String choiceRemoveNode;
+                    Node picked = null;
+                    int n;
+                    current = false;
+                    while (!current) {
+                        System.out.println();
+                        System.out.println("--Removing a node--");
+                        for (Node node : nodes) {
+                            System.out.println(" " + node.toString());
+                        }
+                        System.out.println("----------------");
+                        System.out.println("'enter' to return");
+                        choiceRemoveNode = instructionAndChoice(("Enter the ID of the node to be removed : "));
+                        if(choiceRemoveNode.equals("")) {
+                            instruction = "returned";
+                            break;
+                        } else {
+                            try {
+                                n = Integer.parseInt(choiceRemoveNode);
+                                for(Node node : nodes) {
+                                    if(node.getId() == n) picked = node;
+                                }
+                                if(picked != null) {
+                                    currentGraf.removeNode(picked);
+                                    current = true;
+                                } else instruction = "not a valid ID";
+                            } catch(NumberFormatException e) {
+                                instruction = "not a number";
+                            }
+                        }
+                    }
+                    break;
+                case "4":
+                    //TODO: return if no graph
+                    current = false;
+                    int idFrom = -1, idTo = -1;
+                    while (!current) {
+                        System.out.println();
+                        System.out.println("--Adding an edge-- 1/2");
+                        System.out.println("'enter' to return");
+                        System.out.print("Enter node From id (int) : ");
+                        String choiceAddNode = in.nextLine();
+
+                        if(choiceAddNode.equals("")) {
+                            instruction = "returned";
+                            break;
+                        } else {
+                            try {
+                                idFrom = Integer.parseInt(choiceAddNode);
+                                current = true;
+                            } catch(NumberFormatException e) {
+                                System.out.println("!- '" + choiceAddNode + "' is not an integer");
+                            }
+                        }
+                    }
+
+                    current = false;
+                    while (!current) {
+                        System.out.println();
+                        System.out.println("--Adding an edge-- 2/2");
+                        System.out.println("'enter' to return");
+                        System.out.print("Enter node To id (int) : ");
+                        String choiceAddNode = in.nextLine();
+
+                        if(choiceAddNode.equals("")) {
+                            instruction = "returned";
+                            break;
+                        } else {
+                            try {
+                                idTo = Integer.parseInt(choiceAddNode);
+                                current = true;
+                            } catch (NumberFormatException e) {
+                                System.out.println("!- '" + choiceAddNode + "' is not an integer");
+                            }
+                        }
+                    }
+                    //TODO weight
+                    instruction = "added edge(from: " + idFrom + ", to: " + idTo + ")";
+                    //TODO rework
+                    currentGraf.addEdge(currentGraf.getKeyFromGraf(new Node(idFrom)), currentGraf.getKeyFromGraf(new Node(idTo)));
+                    break;
+                case "5":
+                    //TODO: return if no graph
+                    instruction = "";
+                    current = false;
+                    int nEdge = 0;
+                    List<Edge> edges = null;
+                    while(!current)
+                    {
+                        System.out.println();
+                        System.out.println("--Removing an edge--");
+
+                        edges = currentGraf.getAllEdges();
+                        for (int i = 0; i < edges.size(); i++)
+                        {
+                            System.out.println(i + " : " + edges.get(i));
+                        }
+                        System.out.println("'enter' to return");
+                        System.out.println("----------------");
+                        String choiceRemoveEdge = instructionAndChoice(null);
+
+                        if(choiceRemoveEdge.equals("")) {
+                            instruction = "returned";
+                            break;
+                        } else {
+                            try {
+                                nEdge = Integer.parseInt(choiceRemoveEdge);
+                                current = true;
+                            } catch (NumberFormatException e) {
+                                instruction = choiceRemoveEdge + "' is not an integer";
+                            }
+                        }
+                    }
+
+                    currentGraf.removeEdge(edges.get(nEdge).getHead(), edges.get(nEdge).getTail());
+                    instruction = "removed edge(from: " + edges.get(nEdge).getHead().toString() + ", to: " + edges.get(nEdge).getTail().toString() + ")";
+                    break;
+                case "6":
+                    //TODO: return if no graph
+                    System.out.println();
+                    System.out.println("--Printing the graph in DOT format--");
+                    System.out.println();
+                    System.out.println(currentGraf.toDotString());
+                    System.out.println();
+                    System.out.println("'enter' to go back");
+                    in.nextLine();
+                    break;
+                case "7":
+                    instruction = "";
+                    current = false;
+                    while (!current) {
+                        System.out.println();
+                        System.out.println("--Loading a graph from a DOT file--");
+                        System.out.println("Warning : it will override the current graph");
+                        System.out.println("'enter' to return");
+                        String path = instructionAndChoice("Path to file : ");
+                        if(path.equals("")) {
+                            instruction = "returned";
+                            break;
+                        } else {
+                            try {
+                                currentGraf = getGrafFromDotFile(path);
+                                current = true;
+                                instruction = "graph loaded succesfully";
+                            } catch (IOException e) {
+                                instruction = "unable to read file " + path;
+                            }
+                        }
+                    }
+                    break;
+                case "8":
+                    //TODO: return if no graph
+                    instruction = "";
+                    current = false;
+                    while (!current) {
+                        System.out.println();
+                        System.out.println("--Exporting a graph to a DOT file--");
+                        System.out.println("'enter' to return");
+                        String path = instructionAndChoice("Path or filename : ");
+                        if(path.equals("")) {
+                            instruction = "returned";
+                            break;
+                        } else {
+                            try {
+                                currentGraf.toDotFile(path);
+                                current = true;
+                                instruction = "graph saved succesfully";
+                            } catch (IOException e) {
+                                instruction = "unable to write file " + path;
+                            }
+                        }
+                    }
+                    break;
+                case "9":
+                    //TODO: return if no graph
+                    instruction = "";
+                    System.out.println();
+                    System.out.println("--Reversing the graph--");
+                    System.out.println();
+                    currentGraf = currentGraf.getReverseGraph();
+                    instruction = "graph reversed";
+                    break;
+                case "10":
+                    //TODO: return if no graph
+                    System.out.println();
+                    System.out.println("--Computing the transitive closure of the graph--");
+                    System.out.println();
+                    System.out.println(currentGraf);
+                    System.out.println();
+                    System.out.println("'enter' to go back");
+                    in.nextLine();
+                    break;
+                case "11":
+                    //TODO: return if no graph
+                    nodes = currentGraf.getAllNodes();
+                    nodes.sort(Comparator.comparing(Node::getId));
+
+                    String choiceNodeDFS;
+                    Node startDFS = null;
+                    int nDFS;
+                    current = false;
+                    while (!current) {
+                        System.out.println();
+                        System.out.println("--Traversing the graph in DFS--");
+                        for (Node node : nodes) {
+                            System.out.println(" " + node.toString());
+                        }
+                        System.out.println("----------------");
+                        System.out.println("'enter' to return");
+                        choiceNodeDFS = instructionAndChoice(("Enter the ID of the starting node for a DFS : "));
+                        if(choiceNodeDFS.equals("")) {
+                            instruction = "returned";
+                            break;
+                        } else {
+                            try {
+                                nDFS = Integer.parseInt(choiceNodeDFS);
+                                for(Node node : nodes) {
+                                    if(node.getId() == nDFS) startDFS = node;
+                                }
+                                if(startDFS != null) {
+                                    System.out.println(currentGraf.getDFS(startDFS));
+                                    current = true;
+                                } else instruction = "not a valid ID";
+                            } catch(NumberFormatException e) {
+                                instruction = "not a number";
+                            }
+                        }
+                    }
+                    System.out.println();
+                    System.out.println("'enter' to go back");
+                    in.nextLine();
+                    break;
+                case "12":
+                    //TODO: return if no graph
+                    nodes = currentGraf.getAllNodes();
+                    nodes.sort(Comparator.comparing(Node::getId));
+
+                    String choiceNodeBFS;
+                    Node startBFS = null;
+                    int nBFS;
+                    current = false;
+                    while (!current) {
+                        System.out.println();
+                        System.out.println("--Traversing the graph in BFS--");
+                        for (Node value : nodes) {
+                            System.out.println(" " + value.toString());
+                        }
+                        System.out.println("----------------");
+                        System.out.println("'enter' to return");
+                        choiceNodeBFS = instructionAndChoice(("Enter the ID of the starting node for a BFS : "));
+                        if(choiceNodeBFS.equals("")) {
+                            instruction = "returned";
+                            break;
+                        } else {
+                            try {
+                                nBFS = Integer.parseInt(choiceNodeBFS);
+                                for(Node node : nodes) {
+                                    if(node.getId() == nBFS) startBFS = node;
+                                }
+                                if(startBFS != null) {
+                                    System.out.println(currentGraf.getBFS(startBFS));
+                                    current = true;
+                                } else instruction = "not a valid ID";
+                            } catch(NumberFormatException e) {
+                                instruction = "not a number";
+                            }
+                        }
+                    }
+                    System.out.println();
+                    System.out.println("'enter' to go back");
+                    in.nextLine();
                     break;
                 case "":
+                    //TODO: maybe ask if leave when graph unsaved
+                    System.out.println("--ENDING PROGRAM--");
                     stop = true;
                     break;
                 default:
@@ -133,16 +478,22 @@ public class Main {
         }
     }
 
-    public static String instructionAndChoice() {
-        if(!instruction.equals("")) System.out.println("!- " + instruction);
-        System.out.print("Your choice : ");
+    public static String instructionAndChoice(String str) {
+        if(!instruction.equals(""))
+            System.out.println("!- " + instruction);
+        if(str != null)
+            System.out.print(str);
+        else
+            System.out.print("Your choice : ");
         String choice = in.nextLine();
         System.out.println();
+        instruction = "";
         return choice;
     }
 
     public static void printGraf(Graf g) {
         System.out.println("printing graph :");
+        if(g.adjList.isEmpty()) System.out.println(" - empty - ");
         g.adjList.forEach((key, value) -> System.out.println(key + " " + value.toString()));
     }
 
