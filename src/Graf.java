@@ -244,10 +244,15 @@ public class Graf {
     public String toDotString() {
         StringBuilder sb = new StringBuilder();
 
+        List<Node> lonelyNodes = getAllNodes();
+
         if(this instanceof UndirectedGraf) sb.append("graph g {\n");
         else sb.append("digraph g {\n");
 
         this.adjList.forEach((nodeFrom, nodeList) -> nodeList.forEach((nodeTo -> {
+            lonelyNodes.remove(nodeFrom);
+            lonelyNodes.remove(nodeTo);
+
             sb.append(" ");
 
             sb.append(nodeFrom.getId());
@@ -264,6 +269,10 @@ public class Graf {
 
             sb.append(";\n");
         })));
+
+        lonelyNodes.forEach(node -> {
+                sb.append(" " + node.getId() + ";\n");
+        });
 
         sb.append("}");
 
@@ -305,8 +314,10 @@ public class Graf {
                 currentNode = randomNextNode;
                 unvisitedSize--;
             }
-            randomGraf.addEdge(currentNode, firstNode);  // Loop to the first node
-            possible_edges.remove(new Edge(firstNode, currentNode));
+            if (size > 1) {
+                randomGraf.addEdge(currentNode, firstNode);  // Loop to the first node
+                possible_edges.remove(new Edge(firstNode, currentNode));
+            }
         }
         else {
             for (int i = 0; i < size; i++) { // Just adding vertices to the graf
