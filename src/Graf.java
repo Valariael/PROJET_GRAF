@@ -77,6 +77,13 @@ public class Graf {
         }
     }
 
+    public boolean hasEdge(Node from, Node to) {
+        if (containsNode(from) && containsNode(to)) {
+            return adjList.get(from).contains(to);
+        }
+        return false;
+    }
+
     public List<Node> getSuccessors(Node node) {
         return adjList.get(node);
     }
@@ -283,6 +290,50 @@ public class Graf {
         BufferedWriter writer = new BufferedWriter(new FileWriter(path));
         writer.write(this.toDotString());
         writer.close();
+    }
+
+    public static Graf randomDagBuilder(int size, double edgeProbability) {
+
+        Graf randomDag = new Graf();
+        List<List<Node>> floors = new ArrayList<>();
+
+        int depth = 0;
+        int randomFloor = 0;
+
+        for (int i = 0; i < size; i++) { // putting the nodes into the floors
+            Node newNode = new Node(i);
+            randomDag.addNode(newNode);
+            randomFloor = (int) (Math.random() * size);
+            if (randomFloor >= depth) {
+                floors.add(new ArrayList<>());
+                floors.get(depth).add(newNode);
+                depth++;
+            }
+            else {
+                floors.get(randomFloor).add(newNode);
+            }
+        }
+
+        int nextFloorIndex = 0;
+        List<Node> nextFloor;
+        for (List<Node> floor : floors) {
+            nextFloorIndex++;
+            if (nextFloorIndex == depth) {
+                break;
+            }
+            for (Node node : floor) {
+                while (Math.random() < edgeProbability) {
+                    nextFloor = floors.get(nextFloorIndex + (int) (Math.random() * (depth - nextFloorIndex)));
+                    Node nextNode = nextFloor.get((int)(Math.random() * nextFloor.size()));
+                    if (randomDag.hasEdge(node, nextNode)) {
+                        break;
+                    }
+                    randomDag.addEdge(node, nextNode);
+                }
+            }
+        }
+
+        return randomDag;
     }
 
     public static Graf randomGrafBuilder(int size, double density, boolean connected) {

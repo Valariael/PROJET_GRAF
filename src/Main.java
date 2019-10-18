@@ -36,8 +36,9 @@ public class Main {
             e.printStackTrace();
         }
 
-        UndirectedGraf g3 = UndirectedGraf.randomGrafBuilder(1, 1, true);
+        UndirectedGraf g3 = UndirectedGraf.randomGrafBuilder(2, 1, true);
         Graf g4 = Graf.randomGrafBuilder(1, 1, true);
+        Graf g5 = Graf.randomDagBuilder(0, 1);
         System.out.println();
         printGraf(g3);
         System.out.println();
@@ -45,6 +46,7 @@ public class Main {
         try {
             g3.toDotFile("random_connected_graf_non_dense.dot");
             g4.toDotFile("random_connected_graf_directed_non_dense.dot");
+            g5.toDotFile("random_dag.dot");
         }catch (IOException e) {
             e.printStackTrace();
         }
