@@ -5,6 +5,7 @@ public class Main {
 
     private static String instruction = "";
     private static Scanner in = new Scanner(System.in);
+    private static boolean weightActivated = false;
 
     public static void main(String[] args) {
 
@@ -60,8 +61,7 @@ public class Main {
         List<Node> nodes;
 
         String choiceMenu;
-        //TODO weight support
-        boolean stop = false, weightActivated = false, current;
+        boolean stop = false, current;
         System.out.println("--GRAF PROJECT--\n");
         while (!stop) {
             System.out.println("------MENU------");
@@ -81,7 +81,7 @@ public class Main {
             System.out.println("'enter' to exit");
             System.out.println("----------------");
             if(currentGraf != null) {
-                printGraf(currentGraf);
+                System.out.println(currentGraf.toDotString()); //TODO: replace with improved method
                 System.out.println("----------------");
             }
 
@@ -168,6 +168,7 @@ public class Main {
                     System.out.print("Enter node name ('enter' for empty) : ");
                     String name = in.nextLine();
 
+                    //TODO: check existence of node with same id and replace below with tostring
                     instruction = "added node(id: " + id;
                     if(!name.isEmpty()) {
                         instruction += ", name: " + name;
@@ -235,17 +236,18 @@ public class Main {
                     }
 
                     current = false;
-                    int idFrom = -1, idTo = -1;
-                    while (!current) {
+                    boolean skip = false;
+                    int idFrom = -1, idTo = -1, weight = -1;
+                    while (!current && !skip) {
                         System.out.println();
-                        System.out.println("--Adding an edge-- 1/2");
+                        System.out.println("--Adding an edge-- 1/" + (weightActivated?"3":"2"));
                         System.out.println("'enter' to return");
                         System.out.print("Enter node From id (int) : ");
                         String choiceAddNode = in.nextLine();
 
                         if(choiceAddNode.isEmpty()) {
                             instruction = "returned";
-                            break;
+                            skip = true;
                         } else {
                             try {
                                 idFrom = Integer.parseInt(choiceAddNode);
@@ -257,16 +259,16 @@ public class Main {
                     }
 
                     current = false;
-                    while (!current) {
+                    while (!current && !skip) {
                         System.out.println();
-                        System.out.println("--Adding an edge-- 2/2");
+                        System.out.println("--Adding an edge-- 2/" + (weightActivated?"3":"2"));
                         System.out.println("'enter' to return");
                         System.out.print("Enter node To id (int) : ");
                         String choiceAddNode = in.nextLine();
 
                         if(choiceAddNode.isEmpty()) {
                             instruction = "returned";
-                            break;
+                            skip = true;
                         } else {
                             try {
                                 idTo = Integer.parseInt(choiceAddNode);
@@ -276,11 +278,45 @@ public class Main {
                             }
                         }
                     }
-                    //TODO weight
-                    instruction = "added edge(from: " + idFrom + ", to: " + idTo + ")";
-                    //TODO rework
-                    currentGraf.addEdge(currentGraf.getKeyFromGraf(new Node(idFrom)), currentGraf.getKeyFromGraf(new Node(idTo)));
+
+                    if(weightActivated) {
+                        current = false;
+                        while (!current && !skip) {
+                            System.out.println();
+                            System.out.println("--Adding an edge-- 3/3");
+                            System.out.println("'enter' to return");
+                            System.out.print("Enter weight of the edge (int) : ");
+                            String choiceAddNode = in.nextLine();
+
+                            if(choiceAddNode.isEmpty()) {
+                                instruction = "returned";
+                                skip = true;
+                            } else {
+                                try {
+                                    weight = Integer.parseInt(choiceAddNode);
+                                    current = true;
+                                } catch (NumberFormatException e) {
+                                    System.out.println("!- '" + choiceAddNode + "' is not an integer");
+                                }
+                            }
+                        }
+                    }
+
+                    if(idTo != -1 && idFrom != -1 && !weightActivated) {
+                        Node fromNode = currentGraf.getKeyFromGraf(new Node(idFrom));
+                        Node toNode = currentGraf.getKeyFromGraf(new Node(idTo));
+                        currentGraf.addEdge(fromNode, toNode);
+                        instruction = "added Edge from " + fromNode.toString() + " to " + toNode.toString();
+                    } else if(idTo != -1 && idFrom != -1) {
+                        Node fromNode = currentGraf.getKeyFromGraf(new Node(idFrom));
+                        Node toNode = currentGraf.getKeyFromGraf(new Node(idTo));
+                        toNode.setToWeightActivated(true);
+                        toNode.setToLabel(weight);
+                        currentGraf.addEdge(fromNode, toNode);
+                        instruction = "added Edge from " + fromNode.toString() + " to " + toNode.toString() + " (weight=" + weight + ")";
+                    }
                     break;
+
                 case "5":
                     if(currentGraf == null) {
                         instruction = "create a graph first";
@@ -414,7 +450,7 @@ public class Main {
                     System.out.println();
                     System.out.println("--Computing the transitive closure of the graph--");
                     System.out.println();
-                    System.out.println(currentGraf);
+                    System.out.println(currentGraf.getTransitiveClosure().toDotString());
                     System.out.println();
                     System.out.println("'enter' to go back");
                     in.nextLine();
@@ -515,6 +551,7 @@ public class Main {
                     System.out.println("'enter' to go back");
                     in.nextLine();
                     break;
+
                 case "13":
                     instruction = "";
                     String randomGraphChoice;
@@ -537,10 +574,12 @@ public class Main {
                         current = true;
                     }
                     break;
+
                 case "":
                     System.out.println("--ENDING PROGRAM--");
                     stop = true;
                     break;
+
                 default:
                     instruction = "'" + choiceMenu + "' is not a choice";
                     break;
@@ -561,7 +600,7 @@ public class Main {
         return choice;
     }
 
-    public static void printGraf(Graf g) { // TODO : rework to support weights
+    public static void printGraf(Graf g) { // TODO : improve
         System.out.println("printing " + (g instanceof UndirectedGraf?"graph":"digraph") + " :");
         if(g.adjList.isEmpty()) System.out.println(" - empty - ");
         g.adjList.forEach((key, value) -> System.out.println(key + " " + value.toString()));
@@ -594,6 +633,7 @@ public class Main {
                 } else {
                     int toWeight = Integer.parseInt(parts[start + 3].substring(8,parts[start + 3].length()-2));
                     to = new Node(Integer.parseInt(parts[start + 2]), toWeight);
+                    weightActivated = true;
                 }
                 keyTo = g.getKeyFromGraf(to);
 

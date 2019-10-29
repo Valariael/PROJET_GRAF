@@ -22,10 +22,9 @@ public class UndirectedGraf extends Graf {
             sb.append(" -- ");
             sb.append(nodeTo.getId());
 
-            int n;
-            if((n = nodeTo.getToLabel()) >= 0) {
+            if(nodeTo.isToWeightActivated()) {
                 sb.append(" [label=");
-                sb.append(n);
+                sb.append(nodeTo.getToLabel());
                 sb.append("]");
             }
 

@@ -1,7 +1,8 @@
 public class Node {
     private int id;
     private String name;
-    private int toWeight = -1;
+    private boolean toWeightActivated = false;
+    private int toWeight;
 
     public Node(String name) {
         this.name = name;
@@ -51,9 +52,17 @@ public class Node {
         this.toWeight = toWeight;
     }
 
+    public boolean isToWeightActivated() {
+        return toWeightActivated;
+    }
+
+    public void setToWeightActivated(boolean toWeightActivated) {
+        this.toWeightActivated = toWeightActivated;
+    }
+
     public String toString() {
         if(this.name == null) return "Node : id= " + this.id;
-        return "Node : id= " + this.id + ", node name= " + this.name;
+        return "Node: id= " + this.id + ", name= " + this.name;
     }
 
     @Override

@@ -68,7 +68,7 @@ public class Graf {
     public void addNode(int n) {
         Node node = new Node(n);
         adjList.put(node, new ArrayList<>());
-    } // TODO remove ?
+    } // TODO remove ? or overload every method
 
     /**
      * Removes the vertex in parameter from the graph.
@@ -235,9 +235,13 @@ public class Graf {
         List<Edge> edges = new ArrayList<>();
         for (Map.Entry<Node, ArrayList<Node>> nodeEntry : adjList.entrySet()) {
             for (Node node : nodeEntry.getValue()) {
-                edges.add(new Edge(nodeEntry.getKey(), node));
+                if(node.isToWeightActivated()) {
+                    edges.add(new Edge(nodeEntry.getKey(), node, node.getToLabel()));
+                } else {
+                    edges.add(new Edge(nodeEntry.getKey(), node));
+                }
             }
-        }//TODO support weight
+        }
 
         return edges;
     }
@@ -298,7 +302,7 @@ public class Graf {
 
         // writes 1s if not weighted, writes the weight otherwise
         this.adjList.forEach((nodeFrom, nodeList) -> nodeList.forEach((nodeTo) -> {
-            if(nodeTo.getToLabel() >= 0) matrix[nodes.indexOf(nodeFrom)][nodes.indexOf(nodeTo)] = nodeTo.getToLabel();
+            if(nodeTo.isToWeightActivated()) matrix[nodes.indexOf(nodeFrom)][nodes.indexOf(nodeTo)] = nodeTo.getToLabel();
             else matrix[nodes.indexOf(nodeFrom)][nodes.indexOf(nodeTo)] = 1;
         }));
 
@@ -322,6 +326,7 @@ public class Graf {
             final Node n = reverse.getKeyFromGraf(nodeTo);
 
             Node to = reverse.getKeyFromGraf(nodeFrom);
+            to.setToWeightActivated(nodeFrom.isToWeightActivated());
             to.setToLabel(nodeFrom.getToLabel());
             to.setName(nodeFrom.getName());
 
@@ -465,10 +470,9 @@ public class Graf {
             sb.append(" -> ");
             sb.append(nodeTo.getId());
 
-            int n;
-            if((n = nodeTo.getToLabel()) >= 0) {
+            if(nodeTo.isToWeightActivated()) {
                 sb.append(" [label=");
-                sb.append(n);
+                sb.append(nodeTo.getToLabel());
                 sb.append("]");
             }
 
