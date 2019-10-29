@@ -336,13 +336,13 @@ public class Graf {
         return randomDag;
     }
 
-    public static Graf randomGrafBuilder(int size, double density, boolean connected) {
+    public static Graf randomGrafBuilder(int size, double density, boolean strongly_connected) {
 
         Graf randomGraf = new Graf();
 
         List<Edge> possible_edges;
 
-        if (connected) { // create a path containing all vertices
+        if (strongly_connected) { // create a path containing all vertices
             List<Node> unvisited = new ArrayList<>();
             for (int i = 0; i < size; i++) { // Adding vertices to the graf and to the unvisited list, used to trace the path
                 Node newNode = new Node(i+1);
@@ -385,7 +385,7 @@ public class Graf {
             density = 1;
         }
         int needed_edges = (int) (size * (size - 1) * density);
-        if (connected) {
+        if (strongly_connected) {
             needed_edges = needed_edges - size;
         }
         if (needed_edges < 1) {
