@@ -4,6 +4,43 @@ import java.util.Map;
 
 public class UndirectedGraf extends Graf {
 
+    @Override
+    public String toDotString() {
+        StringBuilder sb = new StringBuilder();
+
+        List<Node> lonelyNodes = getAllNodes();
+
+        sb.append("graph g {\n");
+
+        this.adjList.forEach((nodeFrom, nodeList) -> nodeList.forEach((nodeTo -> {
+            lonelyNodes.remove(nodeFrom);
+            lonelyNodes.remove(nodeTo);
+
+            sb.append(" ");
+
+            sb.append(nodeFrom.getId());
+            sb.append(" -- ");
+            sb.append(nodeTo.getId());
+
+            int n;
+            if((n = nodeTo.getToLabel()) >= 0) {
+                sb.append(" [label=");
+                sb.append(n);
+                sb.append("]");
+            }
+
+            sb.append(";\n");
+        })));
+
+        lonelyNodes.forEach(node -> {
+            sb.append(" ").append(node.getId()).append(";\n");
+        });
+
+        sb.append("}");
+
+        return sb.toString();
+    }
+
     public static UndirectedGraf randomGrafBuilder(int size, double density, boolean connected) {
 
         UndirectedGraf randomGraf = new UndirectedGraf();
@@ -82,5 +119,4 @@ public class UndirectedGraf extends Graf {
         System.out.println("size:" + possible_edges.size());
         return possible_edges;
     }
-
 }

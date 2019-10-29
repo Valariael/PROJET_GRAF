@@ -60,6 +60,7 @@ public class Main {
         List<Node> nodes;
 
         String choiceMenu;
+        //TODO weight support
         boolean stop = false, weightActivated = false, current;
         System.out.println("--GRAF PROJECT--\n");
         while (!stop) {
@@ -76,10 +77,11 @@ public class Main {
             System.out.println("10 : Compute the transitive closure of the graph");
             System.out.println("11 : Traverse the graph in DFS");
             System.out.println("12 : Traverse the graph in BFS");
+            System.out.println("13 : Generate random graphs");
             System.out.println("'enter' to exit");
             System.out.println("----------------");
             if(currentGraf != null) {
-                printGraf(currentGraf); // TODO indicate type of graph
+                printGraf(currentGraf);
                 System.out.println("----------------");
             }
 
@@ -98,13 +100,13 @@ public class Main {
                         System.out.println("2 : Directed");
                         System.out.println("3 : Undirected and weighted");
                         System.out.println("4 : Directed and weighted");
+                        if(currentGraf != null) System.out.println("Warning : it will override the current graph");
                         System.out.println("'enter' to go back");
                         System.out.println("----------------");
 
                         graphTypeChoice = instructionAndChoice(null);
                         switch (graphTypeChoice)
                         {
-                            //TODO: ask for override current
                             case "1":
                                 currentGraf = new UndirectedGraf();
                                 weightActivated = false;
@@ -129,27 +131,6 @@ public class Main {
                                 current = true;
                                 instruction = "empty directed and weighted graph created";
                                 break;
-                            case "5":
-                                instruction = "";
-                                String randomGraphChoice;
-                                //TODO while
-                                System.out.println();
-                                System.out.println("--RANDOM GRAPH--");
-                                //TODO: weight ?
-                                System.out.println("1 : Create an empty graph");
-                                System.out.println("2 : Add a node");
-                                System.out.println("3 : Remove a node");
-                                System.out.println("4 : Add an edge");
-                                System.out.println("'enter' to go back");
-                                System.out.println("----------------");
-
-                                randomGraphChoice = instructionAndChoice(null);
-                                switch (randomGraphChoice)
-                                {
-                                    //TODO
-                                }
-                                current = true;
-                                break;
                             case "":
                                 instruction = "returned";
                                 current = true;
@@ -160,9 +141,13 @@ public class Main {
                                 break;
                         }
                     }
-                break;
+                    break;
+
                 case "2":
-                    //TODO: return if no graph
+                    if(currentGraf == null) {
+                        instruction = "create a graph first";
+                        continue;
+                    }
                     instruction = "";
                     System.out.println();
                     System.out.println("--Creating node--");
@@ -191,9 +176,17 @@ public class Main {
                         currentGraf.addNode(new Node(id));
                     instruction += ")";
                     break;
+
                 case "3":
-                    //TODO: return if no graph
+                    if(currentGraf == null) {
+                        instruction = "create a graph first";
+                        continue;
+                    }
                     nodes = currentGraf.getAllNodes();
+                    if(nodes.isEmpty()) {
+                        instruction = "add a node first";
+                        continue;
+                    }
                     nodes.sort(Comparator.comparing(Node::getId));
 
                     String choiceRemoveNode;
@@ -209,7 +202,7 @@ public class Main {
                         System.out.println("----------------");
                         System.out.println("'enter' to return");
                         choiceRemoveNode = instructionAndChoice(("Enter the ID of the node to be removed : "));
-                        if(choiceRemoveNode.equals("")) {
+                        if(choiceRemoveNode.isEmpty()) {
                             instruction = "returned";
                             break;
                         } else {
@@ -221,15 +214,26 @@ public class Main {
                                 if(picked != null) {
                                     currentGraf.removeNode(picked);
                                     current = true;
-                                } else instruction = "not a valid ID";
+                                } else {
+                                    instruction = "not a valid ID";
+                                }
                             } catch(NumberFormatException e) {
                                 instruction = "not a number";
                             }
                         }
                     }
                     break;
+
                 case "4":
-                    //TODO: return if no graph
+                    if(currentGraf == null) {
+                        instruction = "create a graph first";
+                        continue;
+                    }
+                    if(currentGraf.getAllNodes().isEmpty()) {
+                        instruction = "add a node first";
+                        continue;
+                    }
+
                     current = false;
                     int idFrom = -1, idTo = -1;
                     while (!current) {
@@ -239,7 +243,7 @@ public class Main {
                         System.out.print("Enter node From id (int) : ");
                         String choiceAddNode = in.nextLine();
 
-                        if(choiceAddNode.equals("")) {
+                        if(choiceAddNode.isEmpty()) {
                             instruction = "returned";
                             break;
                         } else {
@@ -260,7 +264,7 @@ public class Main {
                         System.out.print("Enter node To id (int) : ");
                         String choiceAddNode = in.nextLine();
 
-                        if(choiceAddNode.equals("")) {
+                        if(choiceAddNode.isEmpty()) {
                             instruction = "returned";
                             break;
                         } else {
@@ -278,7 +282,15 @@ public class Main {
                     currentGraf.addEdge(currentGraf.getKeyFromGraf(new Node(idFrom)), currentGraf.getKeyFromGraf(new Node(idTo)));
                     break;
                 case "5":
-                    //TODO: return if no graph
+                    if(currentGraf == null) {
+                        instruction = "create a graph first";
+                        continue;
+                    }
+                    if(currentGraf.getAllEdges().isEmpty()) {
+                        instruction = "add an edge first";
+                        continue;
+                    }
+
                     instruction = "";
                     current = false;
                     int nEdge = 0;
@@ -291,13 +303,13 @@ public class Main {
                         edges = currentGraf.getAllEdges();
                         for (int i = 0; i < edges.size(); i++)
                         {
-                            System.out.println(i + " : " + edges.get(i));
+                            System.out.println(i + " : " + edges.get(i).toString());
                         }
                         System.out.println("'enter' to return");
                         System.out.println("----------------");
                         String choiceRemoveEdge = instructionAndChoice(null);
 
-                        if(choiceRemoveEdge.equals("")) {
+                        if(choiceRemoveEdge.isEmpty()) {
                             instruction = "returned";
                             break;
                         } else {
@@ -311,10 +323,14 @@ public class Main {
                     }
 
                     currentGraf.removeEdge(edges.get(nEdge).getHead(), edges.get(nEdge).getTail());
-                    instruction = "removed edge(from: " + edges.get(nEdge).getHead().toString() + ", to: " + edges.get(nEdge).getTail().toString() + ")";
+                    instruction = "removed " + edges.get(nEdge).toString();
                     break;
+
                 case "6":
-                    //TODO: return if no graph
+                    if(currentGraf == null) {
+                        instruction = "create a graph first";
+                        continue;
+                    }
                     System.out.println();
                     System.out.println("--Printing the graph in DOT format--");
                     System.out.println();
@@ -323,31 +339,37 @@ public class Main {
                     System.out.println("'enter' to go back");
                     in.nextLine();
                     break;
+
                 case "7":
                     instruction = "";
                     current = false;
                     while (!current) {
                         System.out.println();
                         System.out.println("--Loading a graph from a DOT file--");
-                        System.out.println("Warning : it will override the current graph");
+                        if(currentGraf != null) System.out.println("Warning : it will override the current graph");
                         System.out.println("'enter' to return");
                         String path = instructionAndChoice("Path to file : ");
-                        if(path.equals("")) {
+                        if(path.isEmpty()) {
                             instruction = "returned";
                             break;
                         } else {
                             try {
                                 currentGraf = getGrafFromDotFile(path);
                                 current = true;
-                                instruction = "graph loaded succesfully";
+                                instruction = "graph loaded successfully";
                             } catch (IOException e) {
+                                System.out.println(e.toString());
                                 instruction = "unable to read file " + path;
                             }
                         }
                     }
                     break;
+
                 case "8":
-                    //TODO: return if no graph
+                    if(currentGraf == null) {
+                        instruction = "create a graph first";
+                        continue;
+                    }
                     instruction = "";
                     current = false;
                     while (!current) {
@@ -355,7 +377,7 @@ public class Main {
                         System.out.println("--Exporting a graph to a DOT file--");
                         System.out.println("'enter' to return");
                         String path = instructionAndChoice("Path or filename : ");
-                        if(path.equals("")) {
+                        if(path.isEmpty()) {
                             instruction = "returned";
                             break;
                         } else {
@@ -364,13 +386,18 @@ public class Main {
                                 current = true;
                                 instruction = "graph saved succesfully";
                             } catch (IOException e) {
+                                System.out.println(e.toString());
                                 instruction = "unable to write file " + path;
                             }
                         }
                     }
                     break;
+
                 case "9":
-                    //TODO: return if no graph
+                    if(currentGraf == null) {
+                        instruction = "create a graph first";
+                        continue;
+                    }
                     instruction = "";
                     System.out.println();
                     System.out.println("--Reversing the graph--");
@@ -378,8 +405,12 @@ public class Main {
                     currentGraf = currentGraf.getReverseGraph();
                     instruction = "graph reversed";
                     break;
+
                 case "10":
-                    //TODO: return if no graph
+                    if(currentGraf == null) {
+                        instruction = "create a graph first";
+                        continue;
+                    }
                     System.out.println();
                     System.out.println("--Computing the transitive closure of the graph--");
                     System.out.println();
@@ -388,9 +419,17 @@ public class Main {
                     System.out.println("'enter' to go back");
                     in.nextLine();
                     break;
+
                 case "11":
-                    //TODO: return if no graph
+                    if(currentGraf == null) {
+                        instruction = "create a graph first";
+                        continue;
+                    }
                     nodes = currentGraf.getAllNodes();
+                    if(nodes.isEmpty()) {
+                        instruction = "add a node first";
+                        continue;
+                    }
                     nodes.sort(Comparator.comparing(Node::getId));
 
                     String choiceNodeDFS;
@@ -404,11 +443,11 @@ public class Main {
                             System.out.println(" " + node.toString());
                         }
                         System.out.println("----------------");
-                        System.out.println("'enter' to return");
+                        System.out.println("'enter' to compute a DFS starting at the smallest ID");
                         choiceNodeDFS = instructionAndChoice(("Enter the ID of the starting node for a DFS : "));
-                        if(choiceNodeDFS.equals("")) {
-                            instruction = "returned";
-                            break;
+                        if(choiceNodeDFS.isEmpty()) {
+                            System.out.println(currentGraf.getDFS());
+                            current = true;
                         } else {
                             try {
                                 nDFS = Integer.parseInt(choiceNodeDFS);
@@ -428,9 +467,17 @@ public class Main {
                     System.out.println("'enter' to go back");
                     in.nextLine();
                     break;
+
                 case "12":
-                    //TODO: return if no graph
+                    if(currentGraf == null) {
+                        instruction = "create a graph first";
+                        continue;
+                    }
                     nodes = currentGraf.getAllNodes();
+                    if(nodes.isEmpty()) {
+                        instruction = "add a node first";
+                        continue;
+                    }
                     nodes.sort(Comparator.comparing(Node::getId));
 
                     String choiceNodeBFS;
@@ -444,11 +491,11 @@ public class Main {
                             System.out.println(" " + value.toString());
                         }
                         System.out.println("----------------");
-                        System.out.println("'enter' to return");
+                        System.out.println("'enter' to compute a BFS starting at the smallest ID");
                         choiceNodeBFS = instructionAndChoice(("Enter the ID of the starting node for a BFS : "));
-                        if(choiceNodeBFS.equals("")) {
-                            instruction = "returned";
-                            break;
+                        if(choiceNodeBFS.isEmpty()) {
+                            System.out.println(currentGraf.getBFS());
+                            current = true;
                         } else {
                             try {
                                 nBFS = Integer.parseInt(choiceNodeBFS);
@@ -468,8 +515,29 @@ public class Main {
                     System.out.println("'enter' to go back");
                     in.nextLine();
                     break;
+                case "13":
+                    instruction = "";
+                    String randomGraphChoice;
+                    boolean currentRandom = false;
+                    while (!currentRandom) {
+                        System.out.println();
+                        System.out.println("--RANDOM GRAPH--");
+                        //TODO: weight ?
+                        System.out.println("1 : -");
+                        System.out.println("2 : -");
+                        System.out.println("3 : -");
+                        System.out.println("4 : -");
+                        System.out.println("'enter' to go back");
+                        System.out.println("----------------");
+
+                        randomGraphChoice = instructionAndChoice(null);
+                        switch (randomGraphChoice) {
+                            //TODO
+                        }
+                        current = true;
+                    }
+                    break;
                 case "":
-                    //TODO: maybe ask if leave when graph unsaved
                     System.out.println("--ENDING PROGRAM--");
                     stop = true;
                     break;
@@ -481,7 +549,7 @@ public class Main {
     }
 
     public static String instructionAndChoice(String str) {
-        if(!instruction.equals(""))
+        if(!instruction.isEmpty())
             System.out.println("!- " + instruction);
         if(str != null)
             System.out.print(str);
@@ -493,8 +561,8 @@ public class Main {
         return choice;
     }
 
-    public static void printGraf(Graf g) {
-        System.out.println("printing graph :");
+    public static void printGraf(Graf g) { // TODO : rework to support weights
+        System.out.println("printing " + (g instanceof UndirectedGraf?"graph":"digraph") + " :");
         if(g.adjList.isEmpty()) System.out.println(" - empty - ");
         g.adjList.forEach((key, value) -> System.out.println(key + " " + value.toString()));
     }

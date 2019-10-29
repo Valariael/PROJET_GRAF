@@ -52,8 +52,8 @@ public class Node {
     }
 
     public String toString() {
-        if(this.name == null) return "node id : " + this.id;
-        return "node id : " + this.id + ", node name : " + this.name;
+        if(this.name == null) return "Node : id= " + this.id;
+        return "Node : id= " + this.id + ", node name= " + this.name;
     }
 
     @Override

@@ -68,7 +68,7 @@ public class Graf {
     public void addNode(int n) {
         Node node = new Node(n);
         adjList.put(node, new ArrayList<>());
-    }
+    } // TODO remove ?
 
     /**
      * Removes the vertex in parameter from the graph.
@@ -237,7 +237,7 @@ public class Graf {
             for (Node node : nodeEntry.getValue()) {
                 edges.add(new Edge(nodeEntry.getKey(), node));
             }
-        }
+        }//TODO support weight
 
         return edges;
     }
@@ -490,7 +490,7 @@ public class Graf {
      */
     public void toDotFile(String path) throws IOException {
         BufferedWriter writer = new BufferedWriter(new FileWriter(path));
-        writer.write(this.toDotString());
+        writer.write(toDotString());
         writer.close();
     }
 
