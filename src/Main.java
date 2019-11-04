@@ -155,27 +155,35 @@ public class Main {
                     current = false;
                     int id = -1;
                     while (!current) {
+                        System.out.println("'enter' to return");
                         System.out.print("Enter node id (int) : ");
                         String choice = in.nextLine();
+
+                        if(choice.isEmpty()) {
+                            instruction = "returned";
+                            break;
+                        }
+
                         try {
                             id = Integer.parseInt(choice);
                             current = true;
+
+                            System.out.print("Enter node name ('enter' for empty) : ");
+                            String name = in.nextLine();
+
+                            Node nodeToBeAdded;
+                            if(!name.isEmpty()) {
+                                nodeToBeAdded = new Node(id, name);
+                                currentGraf.addNode(nodeToBeAdded);
+                            } else {
+                                nodeToBeAdded = new Node(id);
+                                currentGraf.addNode(nodeToBeAdded);
+                            }
+                            instruction = "added " + nodeToBeAdded.toString();
                         } catch(NumberFormatException e) {
                             System.out.println("!- '" + choice + "' is not an integer");
                         }
                     }
-
-                    System.out.print("Enter node name ('enter' for empty) : ");
-                    String name = in.nextLine();
-
-                    //TODO: check existence of node with same id and replace below with tostring
-                    instruction = "added node(id: " + id;
-                    if(!name.isEmpty()) {
-                        instruction += ", name: " + name;
-                        currentGraf.addNode(new Node(id, name));
-                    } else
-                        currentGraf.addNode(new Node(id));
-                    instruction += ")";
                     break;
 
                 case "3":
