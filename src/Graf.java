@@ -611,6 +611,13 @@ public class Graf {
         return randomGraf;
     }
 
+    /**
+     * Computes the shortest path from one node to another using the algorithm of Bellman-Ford.
+     *
+     * @param startNode The Node object where the path should start.
+     * @param finalNode The Node object where the path should end.
+     * @return A Pair object containing the list of Node which is the shortest path and a Boolean at 'true' if there are negative cycles.
+     */
     public Pair<Deque<Node>, Boolean> shortestPath(Node startNode, Node finalNode) {
         Deque<Node> shortestPath = new LinkedList<>();
         Map<Node, Integer> distances = new HashMap<>();

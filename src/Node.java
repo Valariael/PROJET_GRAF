@@ -1,3 +1,6 @@
+/**
+ * This class is the representation of vertices as Objects. It is identified by an integer 'id' that is unique.
+ */
 public class Node {
     private int id;
     private String name;
