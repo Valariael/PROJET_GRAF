@@ -27,7 +27,7 @@ public class Graf {
         int n = 1;
         // creating first node
         Node currentNode = new Node(n);
-        adjList.put(currentNode, new ArrayList<Node>() {});
+        adjList.put(currentNode, new ArrayList<>() {});
 
         // looping through succesor array to create the other nodes
         for (int nodeNumber : successorArray) {
@@ -35,7 +35,7 @@ public class Graf {
             if(nodeNumber == 0) {
                 n++;
                 currentNode = new Node(n);
-                adjList.put(currentNode, new ArrayList<Node>() {});
+                adjList.put(currentNode, new ArrayList<>() {});
             //add node to adjacency list otherwise
             } else {
                 ArrayList<Node> nodes = adjList.get(currentNode);
@@ -504,7 +504,7 @@ public class Graf {
         List<List<Node>> floors = new ArrayList<>();
 
         int depth = 0;
-        int randomFloor = 0;
+        int randomFloor;
 
         for (int i = 0; i < size; i++) { // putting the nodes into the floors
             Node newNode = new Node(i);
@@ -609,5 +609,45 @@ public class Graf {
         }
 
         return randomGraf;
+    }
+
+    public Pair<Deque<Node>, Boolean> shortestPath(Node startNode, Node finalNode) {
+        Deque<Node> shortestPath = new LinkedList<>();
+        Map<Node, Integer> distances = new HashMap<>();
+        Map<Node, Node> predecessors = new HashMap<>();
+        List<Edge> allEdges = this.getAllEdges();
+        int numberOfNodes = this.adjList.keySet().size();
+
+        // init
+        this.adjList.forEach((node, successors) -> {
+            distances.put(node, null);
+            predecessors.put(node, null);
+        });
+        distances.put(startNode, 0);
+        predecessors.put(startNode, startNode);
+        int iter = 1;
+        boolean modified = true;
+
+        // processing shortest paths
+        while(iter < numberOfNodes && modified) {
+            modified = false;
+
+            for(Edge e : allEdges) {
+                if(distances.get(e.getTail()) > distances.get(e.getHead()) + e.getWeight()) {
+                    distances.put(e.getTail(), distances.get(e.getHead()) + e.getWeight());
+                    predecessors.put(e.getTail(), e.getHead());
+                    modified = true;
+                }
+            }
+        }
+
+        // rebuilding shortest path from start to end
+        Node currentNode = finalNode;
+        while(!predecessors.get(currentNode).equals(currentNode)) {
+            shortestPath.addFirst(currentNode);
+            currentNode = predecessors.get(currentNode);
+        }
+
+        return new Pair<>(shortestPath, iter <= numberOfNodes+1);
     }
 }
