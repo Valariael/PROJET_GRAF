@@ -27,7 +27,7 @@ public class Graf {
         int n = 1;
         // creating first node
         Node currentNode = new Node(n);
-        adjList.put(currentNode, new ArrayList<>() {});
+        adjList.put(currentNode, new ArrayList<Node>() {});
 
         // looping through succesor array to create the other nodes
         for (int nodeNumber : successorArray) {
@@ -35,7 +35,7 @@ public class Graf {
             if(nodeNumber == 0) {
                 n++;
                 currentNode = new Node(n);
-                adjList.put(currentNode, new ArrayList<>() {});
+                adjList.put(currentNode, new ArrayList<Node>() {});
             //add node to adjacency list otherwise
             } else {
                 ArrayList<Node> nodes = adjList.get(currentNode);
@@ -92,21 +92,6 @@ public class Graf {
      */
     public boolean containsNode(Node node) {
         return adjList.containsKey(node);
-    }
-
-    /**
-     * As there can be different instances of the same vertex and that it is possible to recreate as similar vertex,
-     * it is needed to be able to search a vertex by checking its 'id'.
-     *
-     * @param node The Node object to be searched in the key set of the adjacency list.
-     * @return The Node instance found, 'null' if not found.
-     */
-    public Node getKeyFromGraf(Node node) {
-        for(Node key : this.adjList.keySet()) {
-            if(key.getId() == node.getId()) return key;
-        }
-
-        return null;
     }
 
     /**
@@ -323,14 +308,7 @@ public class Graf {
 
         // recreating all edges but with head and tail inverted
         this.adjList.forEach((nodeFrom, nodeList) -> nodeList.forEach((nodeTo) -> {
-            final Node n = reverse.getKeyFromGraf(nodeTo);
-
-            Node to = reverse.getKeyFromGraf(nodeFrom);
-            to.setToWeightActivated(nodeFrom.isToWeightActivated());
-            to.setToLabel(nodeFrom.getToLabel());
-            to.setName(nodeFrom.getName());
-
-            reverse.addEdge(n, to);
+            reverse.addEdge(nodeTo, nodeFrom);
         }));
 
         return reverse;

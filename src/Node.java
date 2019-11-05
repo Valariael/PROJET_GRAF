@@ -76,4 +76,10 @@ public class Node {
         Node otherNode = (Node) obj;
         return id == otherNode.getId();
     }
+
+    @Override
+    public int hashCode()
+    {
+        return this.id;
+    }
 }

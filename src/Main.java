@@ -197,7 +197,7 @@ public class Main {
 
                     current = false;
                     boolean skip = false;
-                    int idFrom = -1, idTo = -1, weight = -1;
+                    int idFrom = -1, idTo = -1, weight = 0;
                     while (!current && !skip) {
                         System.out.println();
                         System.out.println("--Adding an edge-- 1/" + (weightActivated?"3":"2"));
@@ -263,13 +263,13 @@ public class Main {
                     }
 
                     if(idTo != -1 && idFrom != -1 && !weightActivated) {
-                        Node fromNode = currentGraf.getKeyFromGraf(new Node(idFrom));
-                        Node toNode = currentGraf.getKeyFromGraf(new Node(idTo));
+                        Node fromNode = new Node(idFrom);
+                        Node toNode = new Node(idTo);
                         currentGraf.addEdge(fromNode, toNode);
                         instruction = "added Edge from " + fromNode.toString() + " to " + toNode.toString();
                     } else if(idTo != -1 && idFrom != -1) {
-                        Node fromNode = currentGraf.getKeyFromGraf(new Node(idFrom));
-                        Node toNode = currentGraf.getKeyFromGraf(new Node(idTo));
+                        Node fromNode = new Node(idFrom);
+                        Node toNode = new Node(idTo);
                         toNode.setToWeightActivated(true);
                         toNode.setToLabel(weight);
                         currentGraf.addEdge(fromNode, toNode);
@@ -591,7 +591,7 @@ public class Main {
                     }
 
                     if(skip) break;
-                    System.out.println(currentGraf.shortestPath(currentGraf.getKeyFromGraf(new Node(idStart)), currentGraf.getKeyFromGraf(new Node(idEnd))));
+                    System.out.println(currentGraf.shortestPath(new Node(idStart), new Node(idEnd)));
 
                     System.out.println();
                     System.out.println("'enter' to go back");
@@ -630,7 +630,7 @@ public class Main {
 
         Graf g = null;
         String s;
-        Node from, to, keyFrom, keyTo;
+        Node from, to;
         String[] parts;
 
         while ((s = br.readLine()) != null) {
@@ -643,7 +643,6 @@ public class Main {
                 int start = 0;
                 if(s.startsWith(" ")) start = 1;
                 from = new Node(Integer.parseInt(parts[start]));
-                keyFrom = Objects.requireNonNull(g).getKeyFromGraf(from); // satisfying IDE
 
                 if(parts.length <= start + 3) {
                     to = new Node(Integer.parseInt(parts[start + 2].substring(0,parts[start + 2].length()-1)));
@@ -652,20 +651,17 @@ public class Main {
                     to = new Node(Integer.parseInt(parts[start + 2]), toWeight);
                     weightActivated = true;
                 }
-                keyTo = g.getKeyFromGraf(to);
 
-                if(keyFrom == null) {
+                if(!g.adjList.containsKey(from)) {
                     g.addNode(from);
-                    keyFrom = from;
                 }
-                if(keyTo == null) {
+                if(!g.adjList.containsKey(to)) {
                     g.addNode(to);
-                    keyTo = to;
                 }
 
-                g.addEdge(keyFrom, keyTo);
+                g.addEdge(from, to);
                 if(g instanceof UndirectedGraf) {
-                    g.addEdge(keyTo, keyFrom);
+                    g.addEdge(to, from);
                 }
             }
         }
