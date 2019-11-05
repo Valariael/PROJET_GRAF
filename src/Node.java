@@ -64,7 +64,7 @@ public class Node {
     }
 
     public String toString() {
-        if(this.name == null) return "Node : id= " + this.id;
+        if(this.name == null) return "Node: id= " + this.id;
         return "Node: id= " + this.id + ", name= " + this.name;
     }
 

@@ -627,7 +627,7 @@ public class Graf {
 
         // init
         this.adjList.forEach((node, successors) -> {
-            distances.put(node, null);
+            distances.put(node, Integer.MAX_VALUE);
             predecessors.put(node, null);
         });
         distances.put(startNode, 0);
@@ -646,7 +646,7 @@ public class Graf {
                     modified = true;
                 }
             }
-        }
+        }//TODO: check path existence
 
         // rebuilding shortest path from start to end
         Node currentNode = finalNode;
@@ -656,5 +656,27 @@ public class Graf {
         }
 
         return new Pair<>(shortestPath, iter <= numberOfNodes+1);
+    }
+
+    /**
+     * Gives a String representation in the form of an adjacency list.
+     * @return A String object representing the Graf.
+     */
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("printing digraph :\n");
+        if(adjList.isEmpty()) sb.append(" - empty - ");
+        adjList.forEach((key, value) -> {
+            sb.append(key.toString());
+            sb.append(" |");
+            value.forEach(node -> {
+                sb.append(" -> ");
+                sb.append(node.toString());
+            });
+            sb.append("\n");
+        });
+
+        return sb.toString();
     }
 }

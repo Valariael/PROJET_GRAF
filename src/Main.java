@@ -8,55 +8,6 @@ public class Main {
     private static boolean weightActivated = false;
 
     public static void main(String[] args) {
-
-        Graf g1 = new Graf(2,4,0,0,6,0,2,3,5,8,0,0,4,7,0,3,0,7);
-        printGraf(g1);
-        System.out.println();
-        try {
-            g1.toDotFile("test.dot");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        try {
-            Graf g2 = getGrafFromDotFile("example.dot");
-            printGraf(g2);
-            System.out.println();
-            System.out.println("last graph's BFS : " + g2.getBFS(null).toString());
-            System.out.println();
-            System.out.println("last graph's DFS : " + g2.getDFS(null).toString());
-            System.out.println();
-            int[][] matrix = g2.getAdjMatrix();
-            for(int i = 0; i < matrix.length-1; i++) {
-                for(int j = 0; j < matrix[i].length-1; j++) {
-                    System.out.print(matrix[i][j]);
-                }
-                System.out.println();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        UndirectedGraf g3 = UndirectedGraf.randomGrafBuilder(2, 1, true);
-        Graf g4 = Graf.randomGrafBuilder(1, 1, true);
-        Graf g5 = Graf.randomDagBuilder(0, 1);
-        System.out.println();
-        printGraf(g3);
-        System.out.println();
-        System.out.println("successor array : " + Arrays.toString(g3.getSuccessorArray()));
-        try {
-            g3.toDotFile("random_connected_graf_non_dense.dot");
-            g4.toDotFile("random_connected_graf_directed_non_dense.dot");
-            g5.toDotFile("random_dag.dot");
-        }catch (IOException e) {
-            e.printStackTrace();
-        }
-        System.out.println();
-        printGraf(g3.getReverseGraph());
-        System.out.println();
-        List<Node> nodes2 = g3.getAllNodes();
-        System.out.println("incident edges to " + nodes2.get(0).toString() + " : " + g3.getIncidentEdges(nodes2.get(0)));
-
         Graf currentGraf = null;
         List<Node> nodes;
 
@@ -78,10 +29,11 @@ public class Main {
             System.out.println("11 : Traverse the graph in DFS");
             System.out.println("12 : Traverse the graph in BFS");
             System.out.println("13 : Generate random graphs");
+            System.out.println("14 : Compute a shortest path");
             System.out.println("'enter' to exit");
             System.out.println("----------------");
             if(currentGraf != null) {
-                System.out.println(currentGraf.toDotString()); //TODO: replace with improved method
+                System.out.println(currentGraf.toString());
                 System.out.println("----------------");
             }
 
@@ -153,7 +105,7 @@ public class Main {
                     System.out.println("--Creating node--");
 
                     current = false;
-                    int id = -1;
+                    int id;
                     while (!current) {
                         System.out.println("'enter' to return");
                         System.out.print("Enter node id (int) : ");
@@ -555,6 +507,7 @@ public class Main {
                             }
                         }
                     }
+
                     System.out.println();
                     System.out.println("'enter' to go back");
                     in.nextLine();
@@ -583,6 +536,68 @@ public class Main {
                     }
                     break;
 
+                case "14":
+                    if(currentGraf == null) {
+                        instruction = "create a graph first";
+                        continue;
+                    }
+                    if(currentGraf.getAllNodes().isEmpty()) {
+                        instruction = "add a node first";
+                        continue;
+                    }
+
+                    current = false;
+                    skip = false;
+                    int idStart = -1, idEnd = -1;
+                    while (!current && !skip) {
+                        System.out.println();
+                        System.out.println("--Choose a starting node-- 1/2");
+                        System.out.println("'enter' to return");
+                        System.out.print("Enter start node id (int) : ");
+                        String choiceShortestPath = in.nextLine();
+
+                        if(choiceShortestPath.isEmpty()) {
+                            instruction = "returned";
+                            skip = true;
+                        } else {
+                            try {
+                                idStart = Integer.parseInt(choiceShortestPath);
+                                current = true;
+                            } catch(NumberFormatException e) {
+                                System.out.println("!- '" + choiceShortestPath + "' is not an integer");
+                            }
+                        }
+                    }
+
+                    current = false;
+                    while (!current && !skip) {
+                        System.out.println();
+                        System.out.println("--Choose a final node-- 2/2");
+                        System.out.println("'enter' to return");
+                        System.out.print("Enter final node id (int) : ");
+                        String choiceShortestPath = in.nextLine();
+
+                        if(choiceShortestPath.isEmpty()) {
+                            instruction = "returned";
+                            skip = true;
+                        } else {
+                            try {
+                                idEnd = Integer.parseInt(choiceShortestPath);
+                                current = true;
+                            } catch (NumberFormatException e) {
+                                System.out.println("!- '" + choiceShortestPath + "' is not an integer");
+                            }
+                        }
+                    }
+
+                    if(skip) break;
+                    System.out.println(currentGraf.shortestPath(currentGraf.getKeyFromGraf(new Node(idStart)), currentGraf.getKeyFromGraf(new Node(idEnd))));
+
+                    System.out.println();
+                    System.out.println("'enter' to go back");
+                    in.nextLine();
+                    break;
+
                 case "":
                     System.out.println("--ENDING PROGRAM--");
                     stop = true;
@@ -595,7 +610,7 @@ public class Main {
         }
     }
 
-    public static String instructionAndChoice(String str) {
+    private static String instructionAndChoice(String str) {
         if(!instruction.isEmpty())
             System.out.println("!- " + instruction);
         if(str != null)
@@ -608,13 +623,7 @@ public class Main {
         return choice;
     }
 
-    public static void printGraf(Graf g) { // TODO : improve
-        System.out.println("printing " + (g instanceof UndirectedGraf?"graph":"digraph") + " :");
-        if(g.adjList.isEmpty()) System.out.println(" - empty - ");
-        g.adjList.forEach((key, value) -> System.out.println(key + " " + value.toString()));
-    }
-
-    public static Graf getGrafFromDotFile(String pathToFile) throws IOException
+    private static Graf getGrafFromDotFile(String pathToFile) throws IOException
     {
         File file = new File(pathToFile);
         BufferedReader br = new BufferedReader(new FileReader(file));
