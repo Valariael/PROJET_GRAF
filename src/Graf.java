@@ -632,6 +632,7 @@ public class Graf {
             shortestPath.addFirst(currentNode);
             currentNode = predecessors.get(currentNode);
         }
+        shortestPath.addFirst(currentNode);
 
         return new Pair<>(shortestPath, iter <= numberOfNodes+1);
     }

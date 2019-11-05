@@ -591,8 +591,14 @@ public class Main {
                     }
 
                     if(skip) break;
-                    System.out.println(currentGraf.shortestPath(new Node(idStart), new Node(idEnd)));
+                    Node start = new Node(idStart);
+                    Node end = new Node(idEnd);
+                    Pair<Deque<Node>, Boolean> bellmanFord = currentGraf.shortestPath(start, end);
+                    System.out.println();
 
+                    System.out.println("Negative cycles ? " + (bellmanFord.bool?"No":"Yes"));
+                    System.out.println("Shortest path from " + start.toString() + " to " + end.toString() + " : ");
+                    bellmanFord.list.forEach(node -> System.out.print(" -> " + node.toString()));
                     System.out.println();
                     System.out.println("'enter' to go back");
                     in.nextLine();
