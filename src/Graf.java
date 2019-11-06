@@ -308,6 +308,10 @@ public class Graf {
 
         // recreating all edges but with head and tail inverted
         this.adjList.forEach((nodeFrom, nodeList) -> nodeList.forEach((nodeTo) -> {
+            nodeFrom.setToLabel(nodeTo.getToLabel());
+            nodeFrom.setToWeightActivated(true);
+            nodeTo.setToLabel(1);
+            nodeTo.setToWeightActivated(false);
             reverse.addEdge(nodeTo, nodeFrom);
         }));
 
@@ -594,9 +598,9 @@ public class Graf {
      *
      * @param startNode The Node object where the path should start.
      * @param finalNode The Node object where the path should end.
-     * @return A Pair object containing the list of Node which is the shortest path and a Boolean at 'true' if there are negative cycles.
+     * @return A ShortestPathInfo object containing the list of Node which is the shortest path and a Boolean at 'true' if there are negative cycles.
      */
-    public Pair<Deque<Node>, Boolean> shortestPath(Node startNode, Node finalNode) {
+    public ShortestPathInfo<Deque<Node>, Boolean, Integer> shortestPath(Node startNode, Node finalNode) {
         Deque<Node> shortestPath = new LinkedList<>();
         Map<Node, Integer> distances = new HashMap<>();
         Map<Node, Node> predecessors = new HashMap<>();
@@ -624,17 +628,20 @@ public class Graf {
                     modified = true;
                 }
             }
-        }//TODO: check path existence
+        }
 
         // rebuilding shortest path from start to end
         Node currentNode = finalNode;
+        int distance = 0;
         while(!predecessors.get(currentNode).equals(currentNode)) {
             shortestPath.addFirst(currentNode);
+            distance += distances.get(currentNode);
             currentNode = predecessors.get(currentNode);
         }
         shortestPath.addFirst(currentNode);
+        if(!currentNode.equals(startNode)) return null;
 
-        return new Pair<>(shortestPath, iter <= numberOfNodes+1);
+        return new ShortestPathInfo<>(shortestPath, iter <= numberOfNodes+1, distance);
     }
 
     /**

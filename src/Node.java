@@ -5,7 +5,7 @@ public class Node {
     private int id;
     private String name;
     private boolean toWeightActivated = false;
-    private int toWeight;
+    private int toWeight = 1;
 
     public Node(String name) {
         this.name = name;

@@ -118,6 +118,10 @@ public class Main {
 
                         try {
                             id = Integer.parseInt(choice);
+                            if(currentGraf.containsNode(new Node(id))) {
+                                instruction = "a node with id " + id + " already exists";
+                                break;
+                            }
                             current = true;
 
                             System.out.print("Enter node name ('enter' for empty) : ");
@@ -126,11 +130,10 @@ public class Main {
                             Node nodeToBeAdded;
                             if(!name.isEmpty()) {
                                 nodeToBeAdded = new Node(id, name);
-                                currentGraf.addNode(nodeToBeAdded);
                             } else {
                                 nodeToBeAdded = new Node(id);
-                                currentGraf.addNode(nodeToBeAdded);
                             }
+                            currentGraf.addNode(nodeToBeAdded);
                             instruction = "added " + nodeToBeAdded.toString();
                         } catch(NumberFormatException e) {
                             System.out.println("!- '" + choice + "' is not an integer");
@@ -262,19 +265,25 @@ public class Main {
                         }
                     }
 
+                    if(skip) break;
+                    Node fromNode = new Node(idFrom);
+                    Node toNode = new Node(idTo);
+                    if(currentGraf.hasEdge(fromNode, toNode)) {
+                        instruction = "such an edge already exists";
+                        break;
+                    }
+
+                    Edge edgeToBeAdded = null;
                     if(idTo != -1 && idFrom != -1 && !weightActivated) {
-                        Node fromNode = new Node(idFrom);
-                        Node toNode = new Node(idTo);
+                        edgeToBeAdded = new Edge(fromNode, toNode);
                         currentGraf.addEdge(fromNode, toNode);
-                        instruction = "added Edge from " + fromNode.toString() + " to " + toNode.toString();
                     } else if(idTo != -1 && idFrom != -1) {
-                        Node fromNode = new Node(idFrom);
-                        Node toNode = new Node(idTo);
                         toNode.setToWeightActivated(true);
                         toNode.setToLabel(weight);
-                        currentGraf.addEdge(fromNode, toNode);
-                        instruction = "added Edge from " + fromNode.toString() + " to " + toNode.toString() + " (weight=" + weight + ")";
+                        edgeToBeAdded = new Edge(fromNode, toNode);
+                        currentGraf.addEdge(edgeToBeAdded);
                     }
+                    instruction = "added " + edgeToBeAdded.toString();
                     break;
 
                 case "5":
@@ -593,12 +602,18 @@ public class Main {
                     if(skip) break;
                     Node start = new Node(idStart);
                     Node end = new Node(idEnd);
-                    Pair<Deque<Node>, Boolean> bellmanFord = currentGraf.shortestPath(start, end);
+                    ShortestPathInfo<Deque<Node>, Boolean, Integer> bellmanFord = currentGraf.shortestPath(start, end);
                     System.out.println();
 
-                    System.out.println("Negative cycles ? " + (bellmanFord.bool?"No":"Yes"));
-                    System.out.println("Shortest path from " + start.toString() + " to " + end.toString() + " : ");
-                    bellmanFord.list.forEach(node -> System.out.print(" -> " + node.toString()));
+                    if(bellmanFord == null) {
+                        System.out.println("There is no path from " + start.toString() + " to " + end.toString() + " ...");
+                    } else {
+                        System.out.println("Negative cycles ? " + (bellmanFord.bool?"No":"Yes"));
+                        System.out.println("Shortest path from " + start.toString() + " to " + end.toString() + " : ");
+                        bellmanFord.list.forEach(node -> System.out.print(" -> " + node.toString()));
+                        System.out.println();
+                        System.out.println("Distance of path : " + bellmanFord.dist);
+                    }
                     System.out.println();
                     System.out.println("'enter' to go back");
                     in.nextLine();
