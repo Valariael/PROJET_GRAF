@@ -118,4 +118,25 @@ public class UndirectedGraf extends Graf {
         System.out.println("size:" + possible_edges.size());
         return possible_edges;
     }
+
+    /**
+     * Gives a String representation in the form of an adjacency list.
+     * @return A String object representing the UndirectedGraf.
+     */
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("printing graph :");
+        if(adjList.isEmpty()) sb.append(" - empty - ");
+        adjList.forEach((key, value) -> {
+            sb.append(key.toString());
+            sb.append(" | ");
+            value.forEach(node -> {
+                sb.append(" -> ");
+                sb.append(node.toString());
+            });
+        });
+
+        return sb.toString();
+    }
 }

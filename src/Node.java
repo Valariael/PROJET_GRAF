@@ -1,8 +1,11 @@
+/**
+ * This class is the representation of vertices as Objects. It is identified by an integer 'id' that is unique.
+ */
 public class Node {
     private int id;
     private String name;
     private boolean toWeightActivated = false;
-    private int toWeight;
+    private int toWeight = 1;
 
     public Node(String name) {
         this.name = name;
@@ -61,7 +64,7 @@ public class Node {
     }
 
     public String toString() {
-        if(this.name == null) return "Node : id= " + this.id;
+        if(this.name == null) return "Node: id= " + this.id;
         return "Node: id= " + this.id + ", name= " + this.name;
     }
 
@@ -72,5 +75,11 @@ public class Node {
         }
         Node otherNode = (Node) obj;
         return id == otherNode.getId();
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return this.id;
     }
 }

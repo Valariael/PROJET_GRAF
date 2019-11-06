@@ -8,55 +8,6 @@ public class Main {
     private static boolean weightActivated = false;
 
     public static void main(String[] args) {
-
-        Graf g1 = new Graf(2,4,0,0,6,0,2,3,5,8,0,0,4,7,0,3,0,7);
-        printGraf(g1);
-        System.out.println();
-        try {
-            g1.toDotFile("test.dot");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        try {
-            Graf g2 = getGrafFromDotFile("example.dot");
-            printGraf(g2);
-            System.out.println();
-            System.out.println("last graph's BFS : " + g2.getBFS(null).toString());
-            System.out.println();
-            System.out.println("last graph's DFS : " + g2.getDFS(null).toString());
-            System.out.println();
-            int[][] matrix = g2.getAdjMatrix();
-            for(int i = 0; i < matrix.length-1; i++) {
-                for(int j = 0; j < matrix[i].length-1; j++) {
-                    System.out.print(matrix[i][j]);
-                }
-                System.out.println();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        UndirectedGraf g3 = UndirectedGraf.randomGrafBuilder(2, 1, true);
-        Graf g4 = Graf.randomGrafBuilder(1, 1, true);
-        Graf g5 = Graf.randomDagBuilder(0, 1);
-        System.out.println();
-        printGraf(g3);
-        System.out.println();
-        System.out.println("successor array : " + Arrays.toString(g3.getSuccessorArray()));
-        try {
-            g3.toDotFile("random_connected_graf_non_dense.dot");
-            g4.toDotFile("random_connected_graf_directed_non_dense.dot");
-            g5.toDotFile("random_dag.dot");
-        }catch (IOException e) {
-            e.printStackTrace();
-        }
-        System.out.println();
-        printGraf(g3.getReverseGraph());
-        System.out.println();
-        List<Node> nodes2 = g3.getAllNodes();
-        System.out.println("incident edges to " + nodes2.get(0).toString() + " : " + g3.getIncidentEdges(nodes2.get(0)));
-
         Graf currentGraf = null;
         List<Node> nodes;
 
@@ -78,10 +29,11 @@ public class Main {
             System.out.println("11 : Traverse the graph in DFS");
             System.out.println("12 : Traverse the graph in BFS");
             System.out.println("13 : Generate random graphs");
+            System.out.println("14 : Compute a shortest path");
             System.out.println("'enter' to exit");
             System.out.println("----------------");
             if(currentGraf != null) {
-                System.out.println(currentGraf.toDotString()); //TODO: replace with improved method
+                System.out.println(currentGraf.toString());
                 System.out.println("----------------");
             }
 
@@ -153,29 +105,40 @@ public class Main {
                     System.out.println("--Creating node--");
 
                     current = false;
-                    int id = -1;
+                    int id;
                     while (!current) {
+                        System.out.println("'enter' to return");
                         System.out.print("Enter node id (int) : ");
                         String choice = in.nextLine();
+
+                        if(choice.isEmpty()) {
+                            instruction = "returned";
+                            break;
+                        }
+
                         try {
                             id = Integer.parseInt(choice);
+                            if(currentGraf.containsNode(new Node(id))) {
+                                instruction = "a node with id " + id + " already exists";
+                                break;
+                            }
                             current = true;
+
+                            System.out.print("Enter node name ('enter' for empty) : ");
+                            String name = in.nextLine();
+
+                            Node nodeToBeAdded;
+                            if(!name.isEmpty()) {
+                                nodeToBeAdded = new Node(id, name);
+                            } else {
+                                nodeToBeAdded = new Node(id);
+                            }
+                            currentGraf.addNode(nodeToBeAdded);
+                            instruction = "added " + nodeToBeAdded.toString();
                         } catch(NumberFormatException e) {
                             System.out.println("!- '" + choice + "' is not an integer");
                         }
                     }
-
-                    System.out.print("Enter node name ('enter' for empty) : ");
-                    String name = in.nextLine();
-
-                    //TODO: check existence of node with same id and replace below with tostring
-                    instruction = "added node(id: " + id;
-                    if(!name.isEmpty()) {
-                        instruction += ", name: " + name;
-                        currentGraf.addNode(new Node(id, name));
-                    } else
-                        currentGraf.addNode(new Node(id));
-                    instruction += ")";
                     break;
 
                 case "3":
@@ -237,7 +200,7 @@ public class Main {
 
                     current = false;
                     boolean skip = false;
-                    int idFrom = -1, idTo = -1, weight = -1;
+                    int idFrom = -1, idTo = -1, weight = 0;
                     while (!current && !skip) {
                         System.out.println();
                         System.out.println("--Adding an edge-- 1/" + (weightActivated?"3":"2"));
@@ -302,19 +265,25 @@ public class Main {
                         }
                     }
 
+                    if(skip) break;
+                    Node fromNode = new Node(idFrom);
+                    Node toNode = new Node(idTo);
+                    if(currentGraf.hasEdge(fromNode, toNode)) {
+                        instruction = "such an edge already exists";
+                        break;
+                    }
+
+                    Edge edgeToBeAdded = null;
                     if(idTo != -1 && idFrom != -1 && !weightActivated) {
-                        Node fromNode = currentGraf.getKeyFromGraf(new Node(idFrom));
-                        Node toNode = currentGraf.getKeyFromGraf(new Node(idTo));
+                        edgeToBeAdded = new Edge(fromNode, toNode);
                         currentGraf.addEdge(fromNode, toNode);
-                        instruction = "added Edge from " + fromNode.toString() + " to " + toNode.toString();
                     } else if(idTo != -1 && idFrom != -1) {
-                        Node fromNode = currentGraf.getKeyFromGraf(new Node(idFrom));
-                        Node toNode = currentGraf.getKeyFromGraf(new Node(idTo));
                         toNode.setToWeightActivated(true);
                         toNode.setToLabel(weight);
-                        currentGraf.addEdge(fromNode, toNode);
-                        instruction = "added Edge from " + fromNode.toString() + " to " + toNode.toString() + " (weight=" + weight + ")";
+                        edgeToBeAdded = new Edge(fromNode, toNode);
+                        currentGraf.addEdge(edgeToBeAdded);
                     }
+                    instruction = "added " + edgeToBeAdded.toString();
                     break;
 
                 case "5":
@@ -547,6 +516,7 @@ public class Main {
                             }
                         }
                     }
+
                     System.out.println();
                     System.out.println("'enter' to go back");
                     in.nextLine();
@@ -661,6 +631,80 @@ public class Main {
                     }
                     break;
 
+                case "14":
+                    if(currentGraf == null) {
+                        instruction = "create a graph first";
+                        continue;
+                    }
+                    if(currentGraf.getAllNodes().isEmpty()) {
+                        instruction = "add a node first";
+                        continue;
+                    }
+
+                    current = false;
+                    skip = false;
+                    int idStart = -1, idEnd = -1;
+                    while (!current && !skip) {
+                        System.out.println();
+                        System.out.println("--Choose a starting node-- 1/2");
+                        System.out.println("'enter' to return");
+                        System.out.print("Enter start node id (int) : ");
+                        String choiceShortestPath = in.nextLine();
+
+                        if(choiceShortestPath.isEmpty()) {
+                            instruction = "returned";
+                            skip = true;
+                        } else {
+                            try {
+                                idStart = Integer.parseInt(choiceShortestPath);
+                                current = true;
+                            } catch(NumberFormatException e) {
+                                System.out.println("!- '" + choiceShortestPath + "' is not an integer");
+                            }
+                        }
+                    }
+
+                    current = false;
+                    while (!current && !skip) {
+                        System.out.println();
+                        System.out.println("--Choose a final node-- 2/2");
+                        System.out.println("'enter' to return");
+                        System.out.print("Enter final node id (int) : ");
+                        String choiceShortestPath = in.nextLine();
+
+                        if(choiceShortestPath.isEmpty()) {
+                            instruction = "returned";
+                            skip = true;
+                        } else {
+                            try {
+                                idEnd = Integer.parseInt(choiceShortestPath);
+                                current = true;
+                            } catch (NumberFormatException e) {
+                                System.out.println("!- '" + choiceShortestPath + "' is not an integer");
+                            }
+                        }
+                    }
+
+                    if(skip) break;
+                    Node start = new Node(idStart);
+                    Node end = new Node(idEnd);
+                    ShortestPathInfo<Deque<Node>, Boolean, Integer> bellmanFord = currentGraf.shortestPath(start, end);
+                    System.out.println();
+
+                    if(bellmanFord == null) {
+                        System.out.println("There is no path from " + start.toString() + " to " + end.toString() + " ...");
+                    } else {
+                        System.out.println("Negative cycles ? " + (bellmanFord.bool?"No":"Yes"));
+                        System.out.println("Shortest path from " + start.toString() + " to " + end.toString() + " : ");
+                        bellmanFord.list.forEach(node -> System.out.print(" -> " + node.toString()));
+                        System.out.println();
+                        System.out.println("Distance of path : " + bellmanFord.dist);
+                    }
+                    System.out.println();
+                    System.out.println("'enter' to go back");
+                    in.nextLine();
+                    break;
+
                 case "":
                     System.out.println("--ENDING PROGRAM--");
                     stop = true;
@@ -673,7 +717,7 @@ public class Main {
         }
     }
 
-    public static String instructionAndChoice(String str) {
+    private static String instructionAndChoice(String str) {
         if(!instruction.isEmpty())
             System.out.println("!- " + instruction);
         if(str != null)
@@ -686,20 +730,14 @@ public class Main {
         return choice;
     }
 
-    public static void printGraf(Graf g) { // TODO : improve
-        System.out.println("printing " + (g instanceof UndirectedGraf?"graph":"digraph") + " :");
-        if(g.adjList.isEmpty()) System.out.println(" - empty - ");
-        g.adjList.forEach((key, value) -> System.out.println(key + " " + value.toString()));
-    }
-
-    public static Graf getGrafFromDotFile(String pathToFile) throws IOException
+    private static Graf getGrafFromDotFile(String pathToFile) throws IOException
     {
         File file = new File(pathToFile);
         BufferedReader br = new BufferedReader(new FileReader(file));
 
         Graf g = null;
         String s;
-        Node from, to, keyFrom, keyTo;
+        Node from, to;
         String[] parts;
 
         while ((s = br.readLine()) != null) {
@@ -712,7 +750,6 @@ public class Main {
                 int start = 0;
                 if(s.startsWith(" ")) start = 1;
                 from = new Node(Integer.parseInt(parts[start]));
-                keyFrom = Objects.requireNonNull(g).getKeyFromGraf(from); // satisfying IDE
 
                 if(parts.length <= start + 3) {
                     to = new Node(Integer.parseInt(parts[start + 2].substring(0,parts[start + 2].length()-1)));
@@ -721,20 +758,17 @@ public class Main {
                     to = new Node(Integer.parseInt(parts[start + 2]), toWeight);
                     weightActivated = true;
                 }
-                keyTo = g.getKeyFromGraf(to);
 
-                if(keyFrom == null) {
+                if(!g.adjList.containsKey(from)) {
                     g.addNode(from);
-                    keyFrom = from;
                 }
-                if(keyTo == null) {
+                if(!g.adjList.containsKey(to)) {
                     g.addNode(to);
-                    keyTo = to;
                 }
 
-                g.addEdge(keyFrom, keyTo);
+                g.addEdge(from, to);
                 if(g instanceof UndirectedGraf) {
-                    g.addEdge(keyTo, keyFrom);
+                    g.addEdge(to, from);
                 }
             }
         }

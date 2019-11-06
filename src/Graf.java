@@ -95,21 +95,6 @@ public class Graf {
     }
 
     /**
-     * As there can be different instances of the same vertex and that it is possible to recreate as similar vertex,
-     * it is needed to be able to search a vertex by checking its 'id'.
-     *
-     * @param node The Node object to be searched in the key set of the adjacency list.
-     * @return The Node instance found, 'null' if not found.
-     */
-    public Node getKeyFromGraf(Node node) {
-        for(Node key : this.adjList.keySet()) {
-            if(key.getId() == node.getId()) return key;
-        }
-
-        return null;
-    }
-
-    /**
      * Adds an edge from vertex 'from' to vertex 'to'.
      * Concretely, adds the vertex 'to' to the list associated in value of the vertex 'from'.
      *
@@ -323,14 +308,11 @@ public class Graf {
 
         // recreating all edges but with head and tail inverted
         this.adjList.forEach((nodeFrom, nodeList) -> nodeList.forEach((nodeTo) -> {
-            final Node n = reverse.getKeyFromGraf(nodeTo);
-
-            Node to = reverse.getKeyFromGraf(nodeFrom);
-            to.setToWeightActivated(nodeFrom.isToWeightActivated());
-            to.setToLabel(nodeFrom.getToLabel());
-            to.setName(nodeFrom.getName());
-
-            reverse.addEdge(n, to);
+            nodeFrom.setToLabel(nodeTo.getToLabel());
+            nodeFrom.setToWeightActivated(true);
+            nodeTo.setToLabel(1);
+            nodeTo.setToWeightActivated(false);
+            reverse.addEdge(nodeTo, nodeFrom);
         }));
 
         return reverse;
@@ -504,7 +486,7 @@ public class Graf {
         List<List<Node>> floors = new ArrayList<>();
 
         int depth = 0;
-        int randomFloor = 0;
+        int randomFloor;
 
         for (int i = 0; i < size; i++) { // putting the nodes into the floors
             Node newNode = new Node(i);
@@ -609,5 +591,78 @@ public class Graf {
         }
 
         return randomGraf;
+    }
+
+    /**
+     * Computes the shortest path from one node to another using the algorithm of Bellman-Ford.
+     *
+     * @param startNode The Node object where the path should start.
+     * @param finalNode The Node object where the path should end.
+     * @return A ShortestPathInfo object containing the list of Node which is the shortest path and a Boolean at 'true' if there are negative cycles.
+     */
+    public ShortestPathInfo<Deque<Node>, Boolean, Integer> shortestPath(Node startNode, Node finalNode) {
+        Deque<Node> shortestPath = new LinkedList<>();
+        Map<Node, Integer> distances = new HashMap<>();
+        Map<Node, Node> predecessors = new HashMap<>();
+        List<Edge> allEdges = this.getAllEdges();
+        int numberOfNodes = this.adjList.keySet().size();
+
+        // init
+        this.adjList.forEach((node, successors) -> {
+            distances.put(node, Integer.MAX_VALUE);
+            predecessors.put(node, null);
+        });
+        distances.put(startNode, 0);
+        predecessors.put(startNode, startNode);
+        int iter = 1;
+        boolean modified = true;
+
+        // processing shortest paths
+        while(iter < numberOfNodes && modified) {
+            modified = false;
+
+            for(Edge e : allEdges) {
+                if(distances.get(e.getTail()) > distances.get(e.getHead()) + e.getWeight()) {
+                    distances.put(e.getTail(), distances.get(e.getHead()) + e.getWeight());
+                    predecessors.put(e.getTail(), e.getHead());
+                    modified = true;
+                }
+            }
+        }
+
+        // rebuilding shortest path from start to end
+        Node currentNode = finalNode;
+        int distance = 0;
+        while(!predecessors.get(currentNode).equals(currentNode)) {
+            shortestPath.addFirst(currentNode);
+            distance += distances.get(currentNode);
+            currentNode = predecessors.get(currentNode);
+        }
+        shortestPath.addFirst(currentNode);
+        if(!currentNode.equals(startNode)) return null;
+
+        return new ShortestPathInfo<>(shortestPath, iter <= numberOfNodes+1, distance);
+    }
+
+    /**
+     * Gives a String representation in the form of an adjacency list.
+     * @return A String object representing the Graf.
+     */
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("printing digraph :\n");
+        if(adjList.isEmpty()) sb.append(" - empty - ");
+        adjList.forEach((key, value) -> {
+            sb.append(key.toString());
+            sb.append(" |");
+            value.forEach(node -> {
+                sb.append(" -> ");
+                sb.append(node.toString());
+            });
+            sb.append("\n");
+        });
+
+        return sb.toString();
     }
 }
