@@ -560,16 +560,102 @@ public class Main {
                         System.out.println();
                         System.out.println("--RANDOM GRAPH--");
                         //TODO: weight ?
-                        System.out.println("1 : -");
-                        System.out.println("2 : -");
-                        System.out.println("3 : -");
-                        System.out.println("4 : -");
+                        System.out.println("1 : Generate a random directed graf");
+                        System.out.println("2 : Generate a random undirected graf");
+                        System.out.println("3 : Generate a random dag");
+                        if(currentGraf != null) System.out.println("Warning : it will override the current graph");
                         System.out.println("'enter' to go back");
                         System.out.println("----------------");
-
+                        int size = -1;
+                        double density = -1, edgeProbability = -1;
+                        boolean connected = false;
                         randomGraphChoice = instructionAndChoice(null);
-                        switch (randomGraphChoice) {
-                            //TODO
+                        if (randomGraphChoice.length() == 1 && "123".contains(randomGraphChoice)) {
+                            System.out.println("--RANDOM GRAPH OPTIONS--");
+                            do {
+                                boolean warn = false;
+                                System.out.print("Set the graf size: ");
+                                try {
+                                    size = Integer.parseInt(in.nextLine());
+                                }catch (NumberFormatException e) {
+                                    size = -1;
+                                    warn = true;
+                                    System.out.println("!- must be a strictly positive integer");
+                                }
+                                if (size <= 0) {
+                                    size = -1;
+                                    if (!warn) System.out.println("!- must be a strictly positive integer");
+                                }
+                            } while(size == -1);
+                            System.out.println("--RANDOM GRAPH OPTIONS--");
+                            if (randomGraphChoice.equals("3")) {
+                                do {
+                                    boolean warn = false;
+                                    System.out.print("Set the edge probability: ");
+                                    try {
+                                        edgeProbability = Double.parseDouble(in.nextLine()); // ...
+                                    }catch (NumberFormatException e) {
+                                        warn = true;
+                                       edgeProbability = -1;
+                                       System.out.println("!- must be a valid double in range [0-1]");
+                                    }
+                                    if (edgeProbability < 0 || edgeProbability > 1) {
+                                        edgeProbability = -1;
+                                        if (!warn) System.out.println("!- must be a valid double in range [0-1]");
+                                    }
+                                } while (edgeProbability == -1);
+                            }
+                            else {
+                                do {
+                                    boolean warn = false;
+                                    System.out.print("Set the graf density: ");
+                                    try {
+                                        density = Double.parseDouble(in.nextLine()); // ...
+                                    } catch (NumberFormatException e) {
+                                        warn = true;
+                                        density = -1;
+                                        System.out.println("!- must be a valid double in range [0-1]");
+                                    }
+                                    if (density < 0 || density > 1) {
+                                        density = -1;
+                                        if (!warn) System.out.println("!- must be a valid double in range [0-1]");
+                                    }
+                                }while(density == -1);
+                                System.out.println("--RANDOM GRAPH OPTIONS--");
+                                boolean valid = false;
+                                do {
+                                    System.out.print("Set if the graf is connected [t/f]: ");
+                                    String connectionChoice = in.nextLine();
+                                    if (connectionChoice.equals("t")) {
+                                        connected = true;
+                                        valid = true;
+                                    } else if (connectionChoice.equals("f")) {
+                                        connected = false;
+                                        valid = true;
+                                    }
+                                    else {
+                                        System.out.println("!- valid answers : [t/f]");
+                                    }
+                                } while(!valid);
+                            }
+                            if (randomGraphChoice.equals("1")) {
+                                currentGraf = Graf.randomGrafBuilder(size, density, connected);
+                            }
+                            else if (randomGraphChoice.equals("2")) {
+                                currentGraf = UndirectedGraf.randomGrafBuilder(size, density, connected);
+                            }
+                            else if (randomGraphChoice.equals("3")) {
+                                currentGraf = Graf.randomDagBuilder(size, edgeProbability);
+                            }
+                            currentRandom = true;
+                        }
+                        else if (randomGraphChoice.equals("")) {
+                            instruction = "returned";
+                            currentRandom = true;
+                        }
+                        else {
+                            instruction = "'" + randomGraphChoice + "' is not a choice";
+                            current = false;
                         }
                         current = true;
                     }
