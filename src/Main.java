@@ -30,6 +30,7 @@ public class Main {
             System.out.println("12 : Traverse the graph in BFS");
             System.out.println("13 : Generate random graphs");
             System.out.println("14 : Compute a shortest path");
+            System.out.println("15 : Export the graph to PNG");
             System.out.println("'enter' to exit");
             System.out.println("----------------");
             if(currentGraf != null) {
@@ -703,6 +704,30 @@ public class Main {
                     System.out.println();
                     System.out.println("'enter' to go back");
                     in.nextLine();
+                    break;
+
+                case "15":
+                    if(currentGraf == null) {
+                        instruction = "create a graph first";
+                        continue;
+                    }
+                    System.out.println();
+                    System.out.println("--Export the graph to PNG--");
+                    System.out.print("Choose a file name: ");
+                    String fileName = in.nextLine();
+                    if (fileName.length() == 0) fileName = "unnamed";
+                    try {
+                        currentGraf.generateRender(fileName);
+                    } catch (Exception e) {
+                        if (e.getMessage().contains("Cannot run program")) {
+                            instruction = "You need Graphviz to be installed and the 'dot' command available from PATH.";
+                        }
+                        else {
+                            instruction = "Couldn't export the graph to PNG.";
+                        }
+                        continue;
+                    }
+                    instruction = "Exported the graph to PNG.";
                     break;
 
                 case "":

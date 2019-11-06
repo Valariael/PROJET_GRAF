@@ -468,6 +468,27 @@ public class Graf {
         return sb.toString();
     }
 
+    public void generateRender(String name) throws IOException, InterruptedException {
+        File renderingDirectory = new File("renders");
+        if (!renderingDirectory.exists()) {
+            renderingDirectory.mkdir();
+        }
+        String tempPath = name + ".dot";
+        toDotFile("renders/" + tempPath);
+        ProcessBuilder pb = new ProcessBuilder("dot", "-O", tempPath, "-Tpng");
+        pb.directory(renderingDirectory.getAbsoluteFile());
+        Process process;
+        try {
+            process = pb.start();
+            process.waitFor();
+        } catch (Exception e) {
+            (new File("renders/"+tempPath)).delete();
+            throw e;
+        }
+        (new File("renders/"+tempPath+".png")).renameTo(new File("renders/"+name+".png"));
+        (new File("renders/"+tempPath)).delete();
+    }
+
     /**
      * Writes the representation in the DOT formalism of the graph to a file.
      *
