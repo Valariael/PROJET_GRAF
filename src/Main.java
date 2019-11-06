@@ -604,7 +604,7 @@ public class Main {
                                         valid = true;
                                     }
                                     else {
-                                        System.out.println("!- valid answers : [t/f]");
+                                        System.out.println("!- valid choices : [t/f]");
                                     }
                                 } while(!valid);
                             }

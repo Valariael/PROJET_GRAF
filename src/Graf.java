@@ -232,9 +232,9 @@ public class Graf {
     }
 
     /**
-     * Gets a list of all the possible edges in the graph, even if they do not technically exist.
+     * Lists all the possible edges that could be created in this graph, including the non-existent ones.
      *
-     * @return A List object containing once every possible edge of the graph.
+     * @return A list containing all the possible edges.
      */
     public List<Edge> getAllPossibleEdges() {
         List<Edge> possible_edges = new ArrayList<>();
@@ -480,6 +480,13 @@ public class Graf {
         writer.close();
     }
 
+    /**
+     * Generates a random Directed Acyclic Graph.
+     *
+     * @param size The number of nodes in the generated graph.
+     * @param edgeProbability A value between 0 and 1 setting the probablity to have more or less edges in the generated graph.
+     * @return A random Dag instance.
+     */
     public static Graf randomDagBuilder(int size, double edgeProbability) {
 
         Graf randomDag = new Graf();
@@ -524,6 +531,14 @@ public class Graf {
         return randomDag;
     }
 
+    /**
+     * Generates a random Directed Graph from specifications.
+     *
+     * @param size The number of nodes in the generated graph.
+     * @param density A value between 0 and 1 setting being the ratio : number of edges in the generated graph / maximum number of edges with the chosen number of nodes.
+     * @param strongly_connected Define whether the strong connection if forced or not, meaning we can go from each node to every other nodes.
+     * @return A random directed graph instance.
+     */
     public static Graf randomGrafBuilder(int size, double density, boolean strongly_connected) {
 
         Graf randomGraf = new Graf();

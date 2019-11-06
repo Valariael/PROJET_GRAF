@@ -40,6 +40,14 @@ public class UndirectedGraf extends Graf {
         return sb.toString();
     }
 
+    /**
+     * Generates a random Undirected Graph from specifications.
+     *
+     * @param size The number of nodes in the generated graph.
+     * @param density A value between 0 and 1 setting being the ratio : number of edges in the generated graph / maximum number of edges with the chosen number of nodes.
+     * @param connected Define whether the connection if forced or not, meaning we can go from each node to every other nodes.
+     * @return A random undirected graph instance.
+     */
     public static UndirectedGraf randomGrafBuilder(int size, double density, boolean connected) {
 
         UndirectedGraf randomGraf = new UndirectedGraf();
@@ -105,6 +113,11 @@ public class UndirectedGraf extends Graf {
 
     }
 
+    /**
+     * Lists all the possible edges that could be created in this graph, including the non-existent ones.
+     *
+     * @return A list containing all the possible edges.
+     */
     @Override
     public List<Edge> getAllPossibleEdges() {
         List<Edge> possible_edges = new ArrayList<>();
