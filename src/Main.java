@@ -276,12 +276,12 @@ public class Main {
 
                     Edge edgeToBeAdded = null;
                     if(idTo != -1 && idFrom != -1 && !weightActivated) {
-                        edgeToBeAdded = new Edge(fromNode, toNode);
+                        edgeToBeAdded = new Edge(toNode, fromNode);
                         currentGraf.addEdge(fromNode, toNode);
                     } else if(idTo != -1 && idFrom != -1) {
                         toNode.setToWeightActivated(true);
                         toNode.setToLabel(weight);
-                        edgeToBeAdded = new Edge(fromNode, toNode);
+                        edgeToBeAdded = new Edge(toNode, fromNode);
                         currentGraf.addEdge(edgeToBeAdded);
                     }
                     instruction = "added " + edgeToBeAdded.toString();
