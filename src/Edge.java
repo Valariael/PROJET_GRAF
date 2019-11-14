@@ -1,7 +1,7 @@
 public class Edge implements Comparable<Edge> {
 
     private int weight;
-    private String label;
+    private String label; //TODO: remove ?
     private Node head, tail;
 
     public int getWeight() {
@@ -25,7 +25,13 @@ public class Edge implements Comparable<Edge> {
         this.label = label;
         this.head = head;
         this.tail = tail;
-}
+    }
+
+    public Edge(Node head, Node tail, int weight) {
+        this.weight = weight;
+        this.head = head;
+        this.tail = tail;
+    }
 
     public Edge(Node head, Node tail) {
         this(head, tail, 1, ""+head.getId()+"->"+tail.getId());
@@ -49,5 +55,17 @@ public class Edge implements Comparable<Edge> {
         }
         Edge edge = (Edge) obj;
         return edge.getHead().equals(head) && edge.getTail().equals(tail);
+    }
+
+    @Override
+    public String toString() {
+        String str = "Edge: from= " +
+                head.toString() +
+                ", to= " +
+                tail.toString() +
+                ", weight= " +
+                weight;
+        if(!label.isEmpty()) str += ", label= " + label;
+        return str;
     }
 }

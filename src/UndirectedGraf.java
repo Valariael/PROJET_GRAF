@@ -4,6 +4,50 @@ import java.util.Map;
 
 public class UndirectedGraf extends Graf {
 
+    @Override
+    public String toDotString() {
+        StringBuilder sb = new StringBuilder();
+
+        List<Node> lonelyNodes = getAllNodes();
+
+        sb.append("graph g {\n");
+
+        this.adjList.forEach((nodeFrom, nodeList) -> nodeList.forEach((nodeTo -> {
+            lonelyNodes.remove(nodeFrom);
+            lonelyNodes.remove(nodeTo);
+
+            sb.append(" ");
+
+            sb.append(nodeFrom.getId());
+            sb.append(" -- ");
+            sb.append(nodeTo.getId());
+
+            if(nodeTo.isToWeightActivated()) {
+                sb.append(" [label=");
+                sb.append(nodeTo.getToLabel());
+                sb.append("]");
+            }
+
+            sb.append(";\n");
+        })));
+
+        lonelyNodes.forEach(node -> {
+            sb.append(" ").append(node.getId()).append(";\n");
+        });
+
+        sb.append("}");
+
+        return sb.toString();
+    }
+
+    /**
+     * Generates a random Undirected Graph from specifications.
+     *
+     * @param size The number of nodes in the generated graph.
+     * @param density A value between 0 and 1 setting being the ratio : number of edges in the generated graph / maximum number of edges with the chosen number of nodes.
+     * @param connected Define whether the connection if forced or not, meaning we can go from each node to every other nodes.
+     * @return A random undirected graph instance.
+     */
     public static UndirectedGraf randomGrafBuilder(int size, double density, boolean connected) {
 
         UndirectedGraf randomGraf = new UndirectedGraf();
@@ -69,6 +113,11 @@ public class UndirectedGraf extends Graf {
 
     }
 
+    /**
+     * Lists all the possible edges that could be created in this graph, including the non-existent ones.
+     *
+     * @return A list containing all the possible edges.
+     */
     @Override
     public List<Edge> getAllPossibleEdges() {
         List<Edge> possible_edges = new ArrayList<>();
@@ -83,4 +132,24 @@ public class UndirectedGraf extends Graf {
         return possible_edges;
     }
 
+    /**
+     * Gives a String representation in the form of an adjacency list.
+     * @return A String object representing the UndirectedGraf.
+     */
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("printing graph :");
+        if(adjList.isEmpty()) sb.append(" - empty - ");
+        adjList.forEach((key, value) -> {
+            sb.append(key.toString());
+            sb.append(" | ");
+            value.forEach(node -> {
+                sb.append(" -> ");
+                sb.append(node.toString());
+            });
+        });
+
+        return sb.toString();
+    }
 }
