@@ -3,6 +3,7 @@ package fr.femtost.disc.minijaja;
 public class NoeudMemoire {
 
     int taille;
+    int tailleDisponible;
     int adresse;
 
     boolean disponible;
@@ -14,6 +15,12 @@ public class NoeudMemoire {
 
     public NoeudMemoire(int adresse, int taille, boolean disponible, NoeudMemoire parent) {
         this.taille = taille;
+        if (disponible) {
+            this.tailleDisponible = taille;
+        }
+        else {
+            this.tailleDisponible = 0;
+        }
         this.adresse = adresse;
         this.disponible = disponible;
         this.parent = parent;
@@ -27,7 +34,7 @@ public class NoeudMemoire {
             return -1;
         }
 
-        if (this.taille < tailleAAllouer) {
+        if (this.tailleDisponible < tailleAAllouer) {
             return -1;
         }
 
@@ -49,29 +56,25 @@ public class NoeudMemoire {
 
         if (droit == null && gauche == null) {
 
-            if (this.taille == tailleAAllouer) { // La taille du noeud est celle que l'on souhaite allouer
-                this.disponible = false;
+            NoeudMemoire noeudNouveau;
 
-                if (parent != null) {  // On lance la propagation à partir du parent, si pas racine
-                    parent.propagationTailleDisponile(-this.taille);
-                }
-                else { // si racine, propagation directe
-                    propagationTailleDisponile(-this.taille);
-                }
-
-                return this.adresse;
+            if (taille == tailleAAllouer) { // La taille à allouer est exactement celle disponible sur le noeud, pas de création de nouveaux noeuds
+                disponible = false;
+                tailleDisponible = 0;
+                noeudNouveau = this;
             }
-
-            NoeudMemoire noeudNouveau = new NoeudMemoire(adresse, tailleAAllouer, false, this);
-            NoeudMemoire noeudDisponible = new NoeudMemoire(adresse+tailleAAllouer, taille - tailleAAllouer, true, this);
-            if (noeudNouveau.taille <= noeudDisponible.taille) {
-                gauche = noeudNouveau;
-                droit = noeudDisponible;
-            } else {
-                noeudNouveau.adresse = adresse + noeudDisponible.taille; // Le noeud mémoire dispo est plus petit que la mémoire alloué, donc il vient à gauche
-                noeudDisponible.adresse = adresse;
-                gauche = noeudDisponible;
-                droit = noeudNouveau;
+            else {
+                noeudNouveau = new NoeudMemoire(adresse, tailleAAllouer, false, this);
+                NoeudMemoire noeudDisponible = new NoeudMemoire(adresse + tailleAAllouer, taille - tailleAAllouer, true, this);
+                if (noeudNouveau.taille <= noeudDisponible.taille) {
+                    gauche = noeudNouveau;
+                    droit = noeudDisponible;
+                } else {
+                    noeudNouveau.adresse = adresse + noeudDisponible.taille; // Le noeud mémoire dispo est plus petit que la mémoire alloué, donc il vient à gauche
+                    noeudDisponible.adresse = adresse;
+                    gauche = noeudDisponible;
+                    droit = noeudNouveau;
+                }
             }
             if (parent != null) {  // On lance la propagation à partir du parent, si pas racine
                 parent.propagationTailleDisponile(-noeudNouveau.taille);
@@ -86,7 +89,7 @@ public class NoeudMemoire {
     }
 
     void propagationTailleDisponile(int tailleAPropapger) {
-        taille += tailleAPropapger;
+        tailleDisponible += tailleAPropapger;
         if (parent != null) {
             parent.propagationTailleDisponile(tailleAPropapger);
         }
@@ -103,11 +106,12 @@ public class NoeudMemoire {
     }
 
     public void suppressionMemoireReccursive(int adresse, NoeudMemoire courant) {
-        //System.out.println("Adresse : " + courant.adresse + ", Disponible : " + Boolean.toString(courant.disponible));
         if(courant.adresse == adresse && !courant.disponible) {
             courant.disponible = true;
-            if (parent != null) {  // On lance la propagation à partir du parent, si pas racine
-                parent.propagationTailleDisponile(courant.taille);
+            courant.tailleDisponible = courant.taille;
+            if (courant.parent != null) {  // On lance la propagation à partir du parent, si pas racine
+                courant.parent.propagationTailleDisponile(courant.taille);
+                courant.parent.fusionNoeudsDisponibles();
             }
             else { // si racine, propagation directe
                 propagationTailleDisponile(courant.taille);
@@ -128,6 +132,29 @@ public class NoeudMemoire {
 
     }
 
+    public boolean estUneFeuille() {
+        return gauche == null && droit == null;
+    }
 
+    public void fusionNoeudsDisponibles() {
+        if (gauche == null || droit == null) {
+            return;  // Corrupted tree exception ?
+        }
+        if (gauche.estUneFeuille() && gauche.disponible && droit.estUneFeuille() && droit.disponible) {
+            gauche = null;
+            droit = null;
+            if (parent != null) {
+                parent.fusionNoeudsDisponibles();
+            }
+        }
+    }
+
+    public int getTaille() {
+        return taille;
+    }
+
+    public boolean estDisponible() {
+        return disponible;
+    }
 
 }
